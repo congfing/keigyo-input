@@ -201,13 +201,13 @@
         <div class="field-group">
           <div class="field-label">担当曜日</div>
           <div class="day-checkboxes" id="newPropertyDays">
-            <label class="day-check-label" onclick="toggleNewDay(this,'月')"><input type="checkbox">月</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'火')"><input type="checkbox">火</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'水')"><input type="checkbox">水</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'木')"><input type="checkbox">木</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'金')"><input type="checkbox">金</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'土')"><input type="checkbox">土</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'日')"><input type="checkbox">日</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'月',event)"><input type="checkbox">月</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'火',event)"><input type="checkbox">火</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'水',event)"><input type="checkbox">水</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'木',event)"><input type="checkbox">木</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'金',event)"><input type="checkbox">金</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'土',event)"><input type="checkbox">土</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'日',event)"><input type="checkbox">日</label>
           </div>
         </div>
         <div class="field-label" style="margin-bottom:8px">入力項目</div>
@@ -452,7 +452,7 @@ function renderSettingsPropertyList(){
         <div style="font-size:13px;color:#666;margin-bottom:6px;font-weight:600">担当曜日</div>
         <div class="day-checkboxes">
           ${['月','火','水','木','金','土','日'].map(d=>`
-            <label class="day-check-label ${prop.days.includes(d)?'checked':''}" onclick="toggleDay(${idx},'${d}',this)">
+            <label class="day-check-label ${prop.days.includes(d)?'checked':''}" onclick="toggleDay(${idx},'${d}',this,event)">
               <input type="checkbox" ${prop.days.includes(d)?'checked':''}>${d}
             </label>`).join('')}
         </div>
@@ -485,7 +485,8 @@ function toggleSettingsItem(idx){
   arrow.textContent=open?'▼':'▲';
 }
 
-function toggleDay(idx,day,label){
+function toggleDay(idx,day,label,event){
+  event.preventDefault();
   const prop=allProperties[idx];
   if(prop.days.includes(day)){
     prop.days=prop.days.filter(d=>d!==day);
@@ -523,7 +524,8 @@ function deleteProperty(idx){
 
 // Add new property
 let newPropSelectedDays=[];
-function toggleNewDay(label,day){
+function toggleNewDay(label,day,event){
+  event.preventDefault();
   label.classList.toggle('checked');
   if(newPropSelectedDays.includes(day)) newPropSelectedDays=newPropSelectedDays.filter(d=>d!==day);
   else newPropSelectedDays.push(day);
