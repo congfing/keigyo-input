@@ -9,95 +9,108 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Hiragino Sans', 'Meiryo', sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
 
-  /* Header */
   .header { background: #1a6eb5; color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-  .header h1 { font-size: 18px; font-weight: bold; }
+  .header-row { display: flex; justify-content: space-between; align-items: center; }
+  .header h1 { font-size: 17px; font-weight: bold; }
+  .settings-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 8px; font-size: 18px; cursor: pointer; }
   .progress-bar { display: flex; gap: 4px; margin-top: 8px; }
   .progress-step { flex: 1; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; transition: background 0.3s; }
   .progress-step.active { background: #fff; }
   .progress-step.done { background: #7dd3fc; }
 
-  /* Screen */
   .screen { display: none; padding: 16px; max-width: 500px; margin: 0 auto; }
   .screen.active { display: block; }
 
-  /* Card */
   .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
-  .card-title { font-size: 14px; color: #888; margin-bottom: 8px; }
 
-  /* Button */
   .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.15s; }
   .btn-primary { background: #1a6eb5; color: white; }
   .btn-primary:active { background: #1558a0; }
   .btn-secondary { background: #e2e8f0; color: #444; }
-  .btn-secondary:active { background: #cbd5e1; }
+  .btn-success { background: #22c55e; color: white; }
   .btn-danger { background: #fee2e2; color: #dc2626; }
   .btn-sm { padding: 8px 12px; font-size: 13px; border-radius: 8px; display: inline-block; width: auto; }
 
-  /* Input */
   input[type="date"], input[type="text"], input[type="number"] {
     width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px;
     font-size: 16px; outline: none; transition: border-color 0.2s;
   }
   input:focus { border-color: #1a6eb5; }
 
-  /* Section title */
   .section-title { font-size: 20px; font-weight: bold; margin-bottom: 4px; color: #1a6eb5; }
   .section-sub { font-size: 13px; color: #888; margin-bottom: 16px; }
 
-  /* Staff list */
   .staff-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 12px;
     background: white; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.07);
     cursor: pointer; transition: all 0.15s; border: 2px solid transparent; }
-  .staff-item:active, .staff-item.selected { border-color: #1a6eb5; background: #eff6ff; }
-  .staff-name { font-size: 17px; font-weight: 500; }
+  .staff-item.selected { border-color: #1a6eb5; background: #eff6ff; }
   .staff-check { color: #1a6eb5; font-size: 20px; display: none; }
   .staff-item.selected .staff-check { display: block; }
 
-  /* Property list */
   .property-item { display: flex; align-items: center; justify-content: space-between;
     padding: 14px 12px; background: white; border-radius: 10px; margin-bottom: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.07); cursor: pointer; transition: all 0.15s; border: 2px solid transparent; }
-  .property-item:active { transform: scale(0.98); }
   .property-item.done { border-color: #22c55e; background: #f0fdf4; }
-  .property-name { font-size: 16px; font-weight: 500; }
-  .property-status { font-size: 22px; }
 
-  /* Input fields */
   .field-group { margin-bottom: 14px; }
   .field-label { font-size: 13px; color: #666; margin-bottom: 4px; font-weight: 600; }
   .field-unit { font-size: 12px; color: #999; margin-left: 4px; }
   .num-input { font-size: 22px; text-align: center; padding: 14px; }
 
-  /* Summary table */
   .summary-table { width: 100%; border-collapse: collapse; font-size: 14px; }
   .summary-table th { background: #1a6eb5; color: white; padding: 8px; text-align: left; }
   .summary-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
   .summary-table tr:nth-child(even) td { background: #f8fafc; }
 
-  /* Tag */
   .day-tag { display: inline-block; background: #dbeafe; color: #1e40af; padding: 3px 10px;
     border-radius: 20px; font-size: 13px; font-weight: bold; margin-left: 8px; }
 
-  /* Add staff row */
   .add-row { display: flex; gap: 8px; margin-top: 8px; }
   .add-row input { flex: 1; }
 
-  /* Back button */
   .back-btn { background: none; border: none; color: white; font-size: 14px; cursor: pointer;
-    padding: 4px 0; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; }
+    padding: 4px 0; display: flex; align-items: center; gap: 4px; }
 
-  /* Empty state */
   .empty-state { text-align: center; padding: 32px 16px; color: #aaa; }
   .empty-state .icon { font-size: 48px; margin-bottom: 8px; }
+
+  /* Settings styles */
+  .settings-property-item { background: white; border-radius: 10px; margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.07); overflow: hidden; }
+  .settings-property-header { display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+  .settings-property-name { font-size: 15px; font-weight: 600; }
+  .settings-property-days { font-size: 12px; color: #888; margin-top: 2px; }
+  .settings-property-body { padding: 12px 14px; background: #fafafa; display: none; }
+  .settings-property-body.open { display: block; }
+  .day-checkboxes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .day-check-label { display: flex; align-items: center; gap: 4px; background: #e2e8f0;
+    padding: 6px 10px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold;
+    transition: all 0.15s; user-select: none; }
+  .day-check-label input { display: none; }
+  .day-check-label.checked { background: #1a6eb5; color: white; }
+  .fields-editor { margin-top: 8px; }
+  .field-edit-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+  .field-edit-row input { flex: 1; padding: 8px; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 6px; }
+  .field-edit-row select { padding: 8px; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; }
+
+  .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; }
+  .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 14px;
+    cursor: pointer; background: #e2e8f0; color: #666; font-weight: bold; }
+  .tab-btn.active { background: #1a6eb5; color: white; }
 </style>
 </head>
 <body>
 
 <div class="header">
-  <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">← 戻る</button>
-  <h1 id="headerTitle">計量データ入力</h1>
-  <div class="progress-bar">
+  <div class="header-row">
+    <div>
+      <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">← 戻る</button>
+      <h1 id="headerTitle">計量データ入力</h1>
+    </div>
+    <button class="settings-btn" onclick="showSettings()" title="設定">⚙️</button>
+  </div>
+  <div class="progress-bar" id="progressBar">
     <div class="progress-step" id="step1"></div>
     <div class="progress-step" id="step2"></div>
     <div class="progress-step" id="step3"></div>
@@ -106,19 +119,17 @@
   </div>
 </div>
 
-<!-- Screen 1: Date Selection -->
+<!-- Screen 1: Date -->
 <div class="screen active" id="screen1">
   <div style="padding-top:16px">
     <div class="section-title">📅 日付選択</div>
     <div class="section-sub">作業日を選択してください</div>
-    <div class="card">
-      <input type="date" id="dateInput">
-    </div>
+    <div class="card"><input type="date" id="dateInput"></div>
     <button class="btn btn-primary" onclick="goToScreen2()">次へ →</button>
   </div>
 </div>
 
-<!-- Screen 2: Staff Selection -->
+<!-- Screen 2: Staff -->
 <div class="screen" id="screen2">
   <div style="padding-top:16px">
     <div class="section-title">👤 担当者選択</div>
@@ -129,7 +140,7 @@
       <button class="btn btn-secondary btn-sm" onclick="addStaff()">追加</button>
     </div>
     <div style="height:12px"></div>
-    <button class="btn btn-primary" onclick="goToScreen3()" id="toScreen3Btn">次へ →</button>
+    <button class="btn btn-primary" onclick="goToScreen3()">次へ →</button>
   </div>
 </div>
 
@@ -153,7 +164,7 @@
   </div>
 </div>
 
-<!-- Screen 5: Confirm & Save -->
+<!-- Screen 5: Confirm -->
 <div class="screen" id="screen5">
   <div style="padding-top:16px">
     <div class="section-title">✅ 確認・保存</div>
@@ -164,233 +175,400 @@
   </div>
 </div>
 
+<!-- Settings Screen -->
+<div class="screen" id="screenSettings">
+  <div style="padding-top:16px">
+    <div class="section-title">⚙️ 設定</div>
+    <div class="section-sub">物件ごとに担当曜日と入力項目を設定できます</div>
+
+    <div class="tab-bar">
+      <button class="tab-btn active" id="tabProperties" onclick="switchTab('properties')">物件・曜日設定</button>
+      <button class="tab-btn" id="tabAddProperty" onclick="switchTab('addProperty')">物件を追加</button>
+    </div>
+
+    <!-- Properties tab -->
+    <div id="tabContentProperties">
+      <div id="settingsPropertyList"></div>
+    </div>
+
+    <!-- Add property tab -->
+    <div id="tabContentAddProperty" style="display:none">
+      <div class="card">
+        <div class="field-group">
+          <div class="field-label">物件名</div>
+          <input type="text" id="newPropertyName" placeholder="例：セブン〇〇店">
+        </div>
+        <div class="field-group">
+          <div class="field-label">担当曜日</div>
+          <div class="day-checkboxes" id="newPropertyDays">
+            <label class="day-check-label" onclick="toggleNewDay(this,'月')"><input type="checkbox">月</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'火')"><input type="checkbox">火</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'水')"><input type="checkbox">水</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'木')"><input type="checkbox">木</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'金')"><input type="checkbox">金</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'土')"><input type="checkbox">土</label>
+            <label class="day-check-label" onclick="toggleNewDay(this,'日')"><input type="checkbox">日</label>
+          </div>
+        </div>
+        <div class="field-label" style="margin-bottom:8px">入力項目</div>
+        <div id="newPropertyFields">
+          <div class="field-edit-row">
+            <input type="text" placeholder="項目名（例：可燃）">
+            <select><option value="袋">袋</option><option value="kg">kg</option></select>
+            <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button>
+          </div>
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addFieldRow()" style="margin-top:6px;margin-bottom:12px">＋ 項目を追加</button>
+        <button class="btn btn-success" onclick="addNewProperty()">物件を登録</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-// ===== DATA =====
-const DAYS = ['日', '月', '火', '水', '木', '金', '土'];
+const DAYS = ['日','月','火','水','木','金','土'];
 
-const defaultStaff = ['担当者A', '担当者B'];
+// ===== MASTER PROPERTY DATA =====
+let allProperties = [
+  { name:'セブン四十九', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン東町１', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン本町１', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン忍者', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン平野東町', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン東条', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'魚民', days:['月'], fields:[{label:'生ごみ',unit:'kg'},{label:'紙',unit:'kg'}] },
+  { name:'旧庁舎', days:['月'], fields:[{label:'白',unit:'袋'},{label:'青',unit:'袋'},{label:'黒',unit:'袋'},{label:'段紙',unit:'kg'},{label:'ペット',unit:'袋'}] },
+  { name:'すき家', days:['月'], fields:[{label:'可燃',unit:'袋'}] },
+  { name:'古本市場', days:['月'], fields:[{label:'可燃',unit:'袋'}] },
+  { name:'ＨＭ白鵬', days:['月'], fields:[{label:'生ごみ',unit:'kg'}] },
+  { name:'アオキ', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
+  { name:'あみやき亭', days:['月'], fields:[{label:'可燃',unit:'kg'},{label:'生ごみ',unit:'kg'},{label:'その他',unit:'kg'}] },
+  { name:'いがっこ給食', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
+  { name:'マックス佐那具', days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'生ごみ',unit:'袋'},{label:'アラ',unit:'kg'}] },
+];
 
-const defaultProperties = {
-  '月': [
-    { name: 'セブン四十九', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-    { name: 'セブン東町１', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-    { name: 'セブン本町１', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-    { name: 'セブン忍者', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-    { name: 'セブン平野東町', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-    { name: 'セブン東条', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-    { name: '魚民', fields: [{label:'生ごみ',unit:'kg'},{label:'紙',unit:'kg'}] },
-    { name: '旧庁舎', fields: [{label:'白',unit:'袋'},{label:'青',unit:'袋'},{label:'黒',unit:'袋'},{label:'段紙',unit:'kg'},{label:'ペット',unit:'袋'}] },
-    { name: 'すき家', fields: [{label:'可燃',unit:'袋'}] },
-    { name: '古本市場', fields: [{label:'可燃',unit:'袋'}] },
-    { name: 'ＨＭ白鵬', fields: [{label:'生ごみ',unit:'kg'}] },
-    { name: 'アオキ', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
-    { name: 'あみやき亭', fields: [{label:'可燃',unit:'kg'},{label:'生ごみ',unit:'kg'},{label:'その他',unit:'kg'}] },
-    { name: 'いがっこ給食', fields: [{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
-    { name: 'マックス佐那具', fields: [{label:'可燃',unit:'袋'},{label:'生ごみ',unit:'袋'},{label:'アラ',unit:'kg'}] },
-  ],
-  '火': [], '水': [], '木': [], '金': [], '土': [], '日': []
-};
+let staffList = ['担当者A','担当者B'];
 
-// ===== STATE =====
 let state = {
-  date: '',
-  dayName: '',
-  staff: [...defaultStaff],
-  selectedStaff: '',
-  properties: [],
-  currentPropertyIndex: -1,
-  entryData: {},
-  currentScreen: 1
+  date:'', dayName:'', selectedStaff:'',
+  properties:[], currentPropertyIndex:-1,
+  entryData:{}, currentScreen:1,
+  prevScreen:1
 };
 
 // ===== INIT =====
-window.onload = function() {
+window.onload = function(){
   const today = new Date();
-  const y = today.getFullYear();
-  const m = String(today.getMonth()+1).padStart(2,'0');
-  const d = String(today.getDate()).padStart(2,'0');
-  document.getElementById('dateInput').value = `${y}-${m}-${d}`;
+  document.getElementById('dateInput').value = today.toISOString().slice(0,10);
   updateProgress(1);
 };
 
 // ===== PROGRESS =====
-function updateProgress(current) {
-  state.currentScreen = current;
+function updateProgress(n){
+  state.currentScreen = n;
+  const isSettings = n === 0;
+  document.getElementById('progressBar').style.display = isSettings ? 'none' : 'flex';
   for(let i=1;i<=5;i++){
     const el = document.getElementById(`step${i}`);
-    if(i < current) el.className = 'progress-step done';
-    else if(i === current) el.className = 'progress-step active';
-    else el.className = 'progress-step';
+    if(el){ if(i<n) el.className='progress-step done'; else if(i===n) el.className='progress-step active'; else el.className='progress-step'; }
   }
-  document.getElementById('backBtn').style.display = current > 1 ? 'flex' : 'none';
+  const backBtn = document.getElementById('backBtn');
+  backBtn.style.display = (n > 1 || isSettings) ? 'flex' : 'none';
+  const titles = {0:'設定',1:'計量データ入力',2:'担当者選択',3:'物件リスト',4:'データ入力',5:'確認・保存'};
+  document.getElementById('headerTitle').textContent = titles[n] || '';
 }
 
-function goBack() {
-  if(state.currentScreen === 4) { showScreen(3); return; }
-  if(state.currentScreen > 1) showScreen(state.currentScreen - 1);
+function goBack(){
+  if(state.currentScreen === 0){ showScreen(state.prevScreen||1); return; }
+  if(state.currentScreen === 4){ showScreen(3); return; }
+  if(state.currentScreen > 1) showScreen(state.currentScreen-1);
 }
 
-function showScreen(n) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(`screen${n}`).classList.add('active');
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const id = n===0?'screenSettings':`screen${n}`;
+  document.getElementById(id).classList.add('active');
   updateProgress(n);
-  const titles = ['計量データ入力','担当者選択','物件リスト','データ入力','確認・保存'];
-  document.getElementById('headerTitle').textContent = titles[n-1];
   window.scrollTo(0,0);
 }
 
-// ===== SCREEN 1 → 2 =====
-function goToScreen2() {
-  const val = document.getElementById('dateInput').value;
-  if(!val){ alert('日付を選択してください'); return; }
-  const d = new Date(val);
-  state.date = val;
-  state.dayName = DAYS[d.getDay()];
-  document.getElementById('screen2sub').textContent = `${val}（${state.dayName}曜日）の担当者を選んでください`;
-  renderStaffList();
-  showScreen(2);
+function showSettings(){
+  state.prevScreen = state.currentScreen;
+  renderSettingsPropertyList();
+  showScreen(0);
 }
 
-function renderStaffList() {
-  const container = document.getElementById('staffList');
-  container.innerHTML = '';
-  state.staff.forEach(name => {
-    const div = document.createElement('div');
-    div.className = 'staff-item' + (state.selectedStaff === name ? ' selected' : '');
-    div.innerHTML = `<span class="staff-name">${name}</span><span class="staff-check">✓</span>
-      <button class="btn btn-danger btn-sm" onclick="removeStaff('${name}',event)" style="margin-left:8px">削除</button>`;
-    div.onclick = function(e){ if(e.target.tagName!=='BUTTON'){ selectStaff(name); } };
-    container.appendChild(div);
+// ===== SCREEN 1→2 =====
+function goToScreen2(){
+  const val = document.getElementById('dateInput').value;
+  if(!val){alert('日付を選択してください');return;}
+  const d = new Date(val+'T00:00:00');
+  state.date = val; state.dayName = DAYS[d.getDay()];
+  document.getElementById('screen2sub').textContent = `${val}（${state.dayName}曜日）の担当者を選んでください`;
+  renderStaffList(); showScreen(2);
+}
+
+function renderStaffList(){
+  const c = document.getElementById('staffList'); c.innerHTML='';
+  staffList.forEach(name=>{
+    const div=document.createElement('div');
+    div.className='staff-item'+(state.selectedStaff===name?' selected':'');
+    div.innerHTML=`<span class="staff-name">${name}</span><span class="staff-check">✓</span>
+      <button class="btn btn-danger btn-sm" onclick="removeStaff('${name}',event)">削除</button>`;
+    div.onclick=e=>{if(e.target.tagName!=='BUTTON'){state.selectedStaff=name;renderStaffList();}};
+    c.appendChild(div);
   });
 }
 
-function selectStaff(name) {
-  state.selectedStaff = name;
-  renderStaffList();
+function addStaff(){
+  const inp=document.getElementById('newStaffName'); const name=inp.value.trim();
+  if(!name||staffList.includes(name)){alert(name?'同じ名前が既に登録されています':'名前を入力してください');return;}
+  staffList.push(name); inp.value=''; renderStaffList();
 }
 
-function addStaff() {
-  const input = document.getElementById('newStaffName');
-  const name = input.value.trim();
-  if(!name){ return; }
-  if(state.staff.includes(name)){ alert('同じ名前が既に登録されています'); return; }
-  state.staff.push(name);
-  input.value = '';
-  renderStaffList();
-}
-
-function removeStaff(name, e) {
+function removeStaff(name,e){
   e.stopPropagation();
-  if(!confirm(`「${name}」を削除しますか？`)) return;
-  state.staff = state.staff.filter(s => s !== name);
-  if(state.selectedStaff === name) state.selectedStaff = '';
+  if(!confirm(`「${name}」を削除しますか？`))return;
+  staffList=staffList.filter(s=>s!==name);
+  if(state.selectedStaff===name)state.selectedStaff='';
   renderStaffList();
 }
 
-// ===== SCREEN 2 → 3 =====
-function goToScreen3() {
-  if(!state.selectedStaff){ alert('担当者を選択してください'); return; }
-  const props = defaultProperties[state.dayName] || [];
-  state.properties = props;
-  document.getElementById('dayTag').textContent = state.dayName + '曜日';
-  document.getElementById('screen3sub').textContent = `担当：${state.selectedStaff}　${props.length}件の物件があります`;
-  renderPropertyList();
-  showScreen(3);
+// ===== SCREEN 2→3 =====
+function goToScreen3(){
+  if(!state.selectedStaff){alert('担当者を選択してください');return;}
+  state.properties = allProperties.filter(p=>p.days.includes(state.dayName));
+  document.getElementById('dayTag').textContent = state.dayName+'曜日';
+  document.getElementById('screen3sub').textContent = `担当：${state.selectedStaff}　${state.properties.length}件の物件`;
+  renderPropertyList(); showScreen(3);
 }
 
-function renderPropertyList() {
-  const container = document.getElementById('propertyList');
-  container.innerHTML = '';
-  if(state.properties.length === 0){
-    container.innerHTML = '<div class="empty-state"><div class="icon">📭</div><div>この曜日の物件はまだ登録されていません</div></div>';
+function renderPropertyList(){
+  const c=document.getElementById('propertyList'); c.innerHTML='';
+  if(!state.properties.length){
+    c.innerHTML='<div class="empty-state"><div class="icon">📭</div><div>この曜日に登録された物件はありません<br><small>⚙️設定から物件の曜日を登録してください</small></div></div>';
     return;
   }
-  state.properties.forEach((prop, idx) => {
-    const done = !!state.entryData[prop.name];
-    const div = document.createElement('div');
-    div.className = 'property-item' + (done ? ' done' : '');
-    div.innerHTML = `<span class="property-name">${prop.name}</span><span class="property-status">${done ? '✅' : '▶'}</span>`;
-    div.onclick = () => goToScreen4(idx);
-    container.appendChild(div);
+  state.properties.forEach((prop,idx)=>{
+    const done=!!state.entryData[prop.name];
+    const div=document.createElement('div');
+    div.className='property-item'+(done?' done':'');
+    div.innerHTML=`<span style="font-size:16px;font-weight:500">${prop.name}</span><span style="font-size:22px">${done?'✅':'▶'}</span>`;
+    div.onclick=()=>goToScreen4(idx);
+    c.appendChild(div);
   });
 }
 
-// ===== SCREEN 3 → 4 =====
-function goToScreen4(idx) {
-  state.currentPropertyIndex = idx;
-  const prop = state.properties[idx];
-  document.getElementById('propertyTitle').textContent = prop.name;
-  const existing = state.entryData[prop.name] || {};
-  const container = document.getElementById('inputFields');
-  container.innerHTML = '';
-  prop.fields.forEach(field => {
-    const div = document.createElement('div');
-    div.className = 'field-group card';
-    div.innerHTML = `<div class="field-label">${field.label}<span class="field-unit">（${field.unit}）</span></div>
+// ===== SCREEN 3→4 =====
+function goToScreen4(idx){
+  state.currentPropertyIndex=idx;
+  const prop=state.properties[idx];
+  document.getElementById('propertyTitle').textContent=prop.name;
+  const existing=state.entryData[prop.name]||{};
+  const c=document.getElementById('inputFields'); c.innerHTML='';
+  prop.fields.forEach(field=>{
+    const div=document.createElement('div');
+    div.className='field-group card';
+    div.innerHTML=`<div class="field-label">${field.label}<span class="field-unit">（${field.unit}）</span></div>
       <input type="number" class="num-input" inputmode="decimal" min="0" step="0.1"
-        id="field_${field.label}" placeholder="0" value="${existing[field.label] !== undefined ? existing[field.label] : ''}">`;
-    container.appendChild(div);
+        id="field_${field.label}" placeholder="0" value="${existing[field.label]!==undefined?existing[field.label]:''}">`;
+    c.appendChild(div);
   });
   showScreen(4);
 }
 
-function savePropertyData() {
-  const prop = state.properties[state.currentPropertyIndex];
-  const data = {};
-  let hasValue = false;
-  prop.fields.forEach(field => {
-    const val = document.getElementById(`field_${field.label}`).value;
-    data[field.label] = val !== '' ? parseFloat(val) : '';
-    if(val !== '') hasValue = true;
+function savePropertyData(){
+  const prop=state.properties[state.currentPropertyIndex];
+  const data={}; let hasVal=false;
+  prop.fields.forEach(f=>{
+    const v=document.getElementById(`field_${f.label}`).value;
+    data[f.label]=v!==''?parseFloat(v):'';
+    if(v!=='')hasVal=true;
   });
-  if(!hasValue){ if(!confirm('値が入力されていません。空のまま保存しますか？')) return; }
-  state.entryData[prop.name] = data;
-  renderPropertyList();
-  showScreen(3);
+  if(!hasVal&&!confirm('値が入力されていません。空のまま保存しますか？'))return;
+  state.entryData[prop.name]=data;
+  renderPropertyList(); showScreen(3);
 }
 
-// ===== SCREEN 3 → 5 =====
-function goToScreen5() {
-  const entered = Object.keys(state.entryData).length;
-  document.getElementById('screen5sub').textContent = `${state.date}（${state.dayName}曜日）　担当：${state.selectedStaff}　${entered}/${state.properties.length}件入力済み`;
-  renderSummary();
-  showScreen(5);
+// ===== SCREEN 3→5 =====
+function goToScreen5(){
+  const entered=Object.keys(state.entryData).length;
+  document.getElementById('screen5sub').textContent=`${state.date}（${state.dayName}曜日）　担当：${state.selectedStaff}　${entered}/${state.properties.length}件入力済み`;
+  renderSummary(); showScreen(5);
 }
 
-function renderSummary() {
-  const container = document.getElementById('summaryContent');
-  if(Object.keys(state.entryData).length === 0){
-    container.innerHTML = '<div class="empty-state"><div>まだ入力データがありません</div></div>';
-    return;
+function renderSummary(){
+  const c=document.getElementById('summaryContent');
+  if(!Object.keys(state.entryData).length){
+    c.innerHTML='<div class="empty-state"><div>まだ入力データがありません</div></div>'; return;
   }
-  let html = '<div class="card"><table class="summary-table"><thead><tr><th>物件</th><th>項目</th><th>値</th><th>単位</th></tr></thead><tbody>';
-  state.properties.forEach(prop => {
-    const data = state.entryData[prop.name];
-    if(!data) return;
-    prop.fields.forEach((field, fi) => {
-      html += `<tr><td>${fi===0 ? prop.name : ''}</td><td>${field.label}</td><td>${data[field.label] !== '' && data[field.label] !== undefined ? data[field.label] : '-'}</td><td>${field.unit}</td></tr>`;
+  let html='<div class="card"><table class="summary-table"><thead><tr><th>物件</th><th>項目</th><th>値</th><th>単位</th></tr></thead><tbody>';
+  state.properties.forEach(prop=>{
+    const data=state.entryData[prop.name]; if(!data)return;
+    prop.fields.forEach((f,fi)=>{
+      html+=`<tr><td>${fi===0?prop.name:''}</td><td>${f.label}</td><td>${data[f.label]!==''&&data[f.label]!==undefined?data[f.label]:'-'}</td><td>${f.unit}</td></tr>`;
     });
   });
-  html += '</tbody></table></div>';
-  container.innerHTML = html;
+  html+='</tbody></table></div>';
+  c.innerHTML=html;
 }
 
-// ===== EXPORT XLSX =====
-function exportXlsx() {
-  const wb = XLSX.utils.book_new();
-  const rows = [['物件名', '項目', '値', '単位', '日付', '担当者']];
-  state.properties.forEach(prop => {
-    const data = state.entryData[prop.name];
-    if(!data) return;
-    prop.fields.forEach(field => {
-      rows.push([prop.name, field.label, data[field.label] !== '' ? data[field.label] : '', field.unit, state.date, state.selectedStaff]);
-    });
+function exportXlsx(){
+  const wb=XLSX.utils.book_new();
+  const rows=[['物件名','項目','値','単位','日付','担当者']];
+  state.properties.forEach(prop=>{
+    const data=state.entryData[prop.name]; if(!data)return;
+    prop.fields.forEach(f=>{rows.push([prop.name,f.label,data[f.label]!==''?data[f.label]:'',f.unit,state.date,state.selectedStaff]);});
   });
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws['!cols'] = [{wch:20},{wch:12},{wch:10},{wch:8},{wch:14},{wch:14}];
-  XLSX.utils.book_append_sheet(wb, ws, '計量データ');
-  const dateStr = state.date.replace(/-/g,'');
-  XLSX.writeFile(wb, `計量データ_${dateStr}_${state.selectedStaff}.xlsx`);
+  const ws=XLSX.utils.aoa_to_sheet(rows);
+  ws['!cols']=[{wch:20},{wch:12},{wch:10},{wch:8},{wch:14},{wch:14}];
+  XLSX.utils.book_append_sheet(wb,ws,'計量データ');
+  XLSX.writeFile(wb,`計量データ_${state.date.replace(/-/g,'')}_${state.selectedStaff}.xlsx`);
+}
+
+// ===== SETTINGS =====
+function switchTab(tab){
+  document.getElementById('tabContentProperties').style.display = tab==='properties'?'block':'none';
+  document.getElementById('tabContentAddProperty').style.display = tab==='addProperty'?'block':'none';
+  document.getElementById('tabProperties').className = 'tab-btn'+(tab==='properties'?' active':'');
+  document.getElementById('tabAddProperty').className = 'tab-btn'+(tab==='addProperty'?' active':'');
+}
+
+function renderSettingsPropertyList(){
+  const c=document.getElementById('settingsPropertyList'); c.innerHTML='';
+  allProperties.forEach((prop,idx)=>{
+    const div=document.createElement('div');
+    div.className='settings-property-item';
+    const dayStr=prop.days.length?prop.days.join('・')+'曜日':'曜日未設定';
+    div.innerHTML=`
+      <div class="settings-property-header" onclick="toggleSettingsItem(${idx})">
+        <div>
+          <div class="settings-property-name">${prop.name}</div>
+          <div class="settings-property-days" id="dayDisplay_${idx}">${dayStr}</div>
+        </div>
+        <span style="color:#aaa;font-size:18px" id="arrow_${idx}">▼</span>
+      </div>
+      <div class="settings-property-body" id="body_${idx}">
+        <div style="font-size:13px;color:#666;margin-bottom:6px;font-weight:600">担当曜日</div>
+        <div class="day-checkboxes">
+          ${['月','火','水','木','金','土','日'].map(d=>`
+            <label class="day-check-label ${prop.days.includes(d)?'checked':''}" onclick="toggleDay(${idx},'${d}',this)">
+              <input type="checkbox" ${prop.days.includes(d)?'checked':''}>${d}
+            </label>`).join('')}
+        </div>
+        <div style="font-size:13px;color:#666;margin-bottom:6px;font-weight:600">入力項目</div>
+        <div id="fields_${idx}">
+          ${prop.fields.map((f,fi)=>`
+            <div class="field-edit-row">
+              <input type="text" value="${f.label}" onchange="updateFieldLabel(${idx},${fi},this.value)" placeholder="項目名">
+              <select onchange="updateFieldUnit(${idx},${fi},this.value)">
+                <option value="袋" ${f.unit==='袋'?'selected':''}>袋</option>
+                <option value="kg" ${f.unit==='kg'?'selected':''}>kg</option>
+              </select>
+              <button class="btn btn-danger btn-sm" onclick="removeField(${idx},${fi})">✕</button>
+            </div>`).join('')}
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="addField(${idx})" style="margin-top:4px">＋ 項目追加</button>
+        <div style="margin-top:10px">
+          <button class="btn btn-danger btn-sm" onclick="deleteProperty(${idx})">この物件を削除</button>
+        </div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleSettingsItem(idx){
+  const body=document.getElementById(`body_${idx}`);
+  const arrow=document.getElementById(`arrow_${idx}`);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  arrow.textContent=open?'▼':'▲';
+}
+
+function toggleDay(idx,day,label){
+  const prop=allProperties[idx];
+  if(prop.days.includes(day)){
+    prop.days=prop.days.filter(d=>d!==day);
+    label.classList.remove('checked');
+  } else {
+    prop.days.push(day);
+    label.classList.add('checked');
+  }
+  const ordered=['月','火','水','木','金','土','日'];
+  prop.days.sort((a,b)=>ordered.indexOf(a)-ordered.indexOf(b));
+  document.getElementById(`dayDisplay_${idx}`).textContent = prop.days.length?prop.days.join('・')+'曜日':'曜日未設定';
+}
+
+function updateFieldLabel(propIdx,fieldIdx,val){ allProperties[propIdx].fields[fieldIdx].label=val; }
+function updateFieldUnit(propIdx,fieldIdx,val){ allProperties[propIdx].fields[fieldIdx].unit=val; }
+
+function removeField(propIdx,fieldIdx){
+  allProperties[propIdx].fields.splice(fieldIdx,1);
+  renderSettingsPropertyList();
+  document.getElementById(`body_${propIdx}`).classList.add('open');
+}
+
+function addField(propIdx){
+  allProperties[propIdx].fields.push({label:'',unit:'袋'});
+  renderSettingsPropertyList();
+  const body=document.getElementById(`body_${propIdx}`);
+  body.classList.add('open');
+}
+
+function deleteProperty(idx){
+  if(!confirm(`「${allProperties[idx].name}」を削除しますか？`))return;
+  allProperties.splice(idx,1);
+  renderSettingsPropertyList();
+}
+
+// Add new property
+let newPropSelectedDays=[];
+function toggleNewDay(label,day){
+  label.classList.toggle('checked');
+  if(newPropSelectedDays.includes(day)) newPropSelectedDays=newPropSelectedDays.filter(d=>d!==day);
+  else newPropSelectedDays.push(day);
+}
+
+function addFieldRow(){
+  const c=document.getElementById('newPropertyFields');
+  const div=document.createElement('div');
+  div.className='field-edit-row';
+  div.innerHTML=`<input type="text" placeholder="項目名（例：可燃）">
+    <select><option value="袋">袋</option><option value="kg">kg</option></select>
+    <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button>`;
+  c.appendChild(div);
+}
+
+function removeFieldRow(btn){
+  btn.parentElement.remove();
+}
+
+function addNewProperty(){
+  const name=document.getElementById('newPropertyName').value.trim();
+  if(!name){alert('物件名を入力してください');return;}
+  if(allProperties.find(p=>p.name===name)){alert('同じ名前の物件が既に登録されています');return;}
+  const rows=document.querySelectorAll('#newPropertyFields .field-edit-row');
+  const fields=[];
+  rows.forEach(row=>{
+    const label=row.querySelector('input').value.trim();
+    const unit=row.querySelector('select').value;
+    if(label) fields.push({label,unit});
+  });
+  if(!fields.length){alert('入力項目を1つ以上追加してください');return;}
+  const ordered=['月','火','水','木','金','土','日'];
+  newPropSelectedDays.sort((a,b)=>ordered.indexOf(a)-ordered.indexOf(b));
+  allProperties.push({name,days:[...newPropSelectedDays],fields});
+  // reset
+  document.getElementById('newPropertyName').value='';
+  document.querySelectorAll('#newPropertyDays .day-check-label').forEach(l=>l.classList.remove('checked'));
+  newPropSelectedDays=[];
+  document.getElementById('newPropertyFields').innerHTML=`<div class="field-edit-row">
+    <input type="text" placeholder="項目名（例：可燃）">
+    <select><option value="袋">袋</option><option value="kg">kg</option></select>
+    <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button></div>`;
+  alert(`「${name}」を登録しました`);
+  switchTab('properties');
+  renderSettingsPropertyList();
 }
 </script>
 </body>
