@@ -261,10 +261,10 @@
 const DAYS_JP   = ['日','月','火','水','木','金','土'];
 const ORDERED_DAYS = ['月','火','水','木','金','土','日'];
 const FIELD_SUGGESTIONS = ['可燃','不燃','生ごみ','段ボール','アラ','ペット','白','青','黒','段紙','紙','缶','びん','その他','廃プラ'];
-const LS_PROPERTIES    = 'keigyo_properties';
-const LS_STAFF         = 'keigyo_staff';
-const LS_ORDER_PREFIX  = 'keigyo_order_';
-const LS_LASTDATA_PREFIX = 'keigyo_last_';
+const LS_PROPERTIES    = 'keiryo_properties';
+const LS_STAFF         = 'keiryo_staff';
+const LS_ORDER_PREFIX  = 'keiryo_order_';
+const LS_LASTDATA_PREFIX = 'keiryo_last_';
 
 const DEFAULT_PROPERTIES = [
   { name:'セブン四十九',  order:1,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
@@ -305,7 +305,10 @@ let state = {
 // ===== INIT =====
 window.onload = function(){
   const t=new Date();
-  document.getElementById('dateInput').value=t.toISOString().slice(0,10);
+  const y=t.getFullYear();
+  const m=String(t.getMonth()+1).padStart(2,'0');
+  const d=String(t.getDate()).padStart(2,'0');
+  document.getElementById('dateInput').value=`${y}-${m}-${d}`;
   updateNav(1);
 };
 
