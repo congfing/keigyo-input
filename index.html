@@ -123,6 +123,18 @@
     padding: 10px 12px; margin-bottom: 10px; display: none; align-items: center; justify-content: space-between; gap: 10px; }
   .save-order-banner span { font-size: 13px; color: #92400e; flex: 1; }
   .sort-hint { font-size: 12px; color: #aaa; text-align: center; padding: 2px 0 8px; }
+
+  /* History */
+  .history-item { background: white; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); overflow: hidden; }
+  .history-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; }
+  .history-date { font-size: 15px; font-weight: 700; color: #1a6eb5; }
+  .history-staff { font-size: 13px; color: #888; margin-top: 2px; }
+  .history-body { padding: 10px 14px; background: #fafafa; border-top: 1px solid #f0f0f0; display: none; }
+  .history-body.open { display: block; }
+  .past-data-banner { background: #eff6ff; border: 1px solid #93c5fd; border-radius: 10px;
+    padding: 12px; margin-top: 12px; display: none; }
+  .past-data-banner .banner-title { font-size: 14px; font-weight: 600; color: #1e40af; margin-bottom: 6px; }
+  .past-data-banner .banner-entries { font-size: 13px; color: #555; margin-bottom: 8px; }
 </style>
 </head>
 <body>
@@ -139,6 +151,7 @@
     <button class="nav-tab active" id="navDate" onclick="navTo(1)">📅 日付選択</button>
     <button class="nav-tab disabled" id="navStaff" onclick="navTo(2)">👤 担当者</button>
     <button class="nav-tab disabled" id="navProps" onclick="navTo(3)">🏢 物件リスト</button>
+    <button class="nav-tab" id="navHistory" onclick="navTo(6)">📋 履歴</button>
     <button class="nav-tab" id="navSettings" onclick="navTo(0)">⚙️ 設定</button>
   </div>
 </div>
@@ -148,8 +161,14 @@
   <div style="padding-top:16px">
     <div class="section-title">📅 日付選択</div>
     <div class="section-sub">作業日を選択してください</div>
-    <div class="card"><input type="date" id="dateInput"></div>
-    <button class="btn btn-primary" onclick="goToScreen2()">次へ →</button>
+    <div class="card"><input type="date" id="dateInput" onchange="checkPastData(this.value)"></div>
+    <div class="past-data-banner" id="pastDataBanner">
+      <div class="banner-title">📋 この日付のデータが保存されています</div>
+      <div class="banner-entries" id="pastDataEntries"></div>
+      <button class="btn btn-secondary btn-sm" onclick="goToHistoryForDate()">データを確認する</button>
+    </div>
+    <div style="height:12px"></div>
+    <button class="btn btn-primary" onclick="goToScreen2()">新規入力 →</button>
   </div>
 </div>
 
@@ -205,7 +224,16 @@
   </div>
 </div>
 
-<!-- Screen 0: Settings (add property + staff) -->
+<!-- Screen 6: History -->
+<div class="screen" id="screen6">
+  <div style="padding-top:16px">
+    <div class="section-title">📋 履歴</div>
+    <div class="section-sub">過去の入力データを確認できます</div>
+    <div id="historyList"></div>
+  </div>
+</div>
+
+<!-- Screen 0: Settings -->
 <div class="screen" id="screen0">
   <div style="padding-top:16px">
     <div class="section-title">⚙️ 設定</div>
@@ -265,6 +293,7 @@ const LS_PROPERTIES    = 'keiryo_properties';
 const LS_STAFF         = 'keiryo_staff';
 const LS_ORDER_PREFIX  = 'keiryo_order_';
 const LS_LASTDATA_PREFIX = 'keiryo_last_';
+const LS_HISTORY_PREFIX  = 'keiryo_hist_'; // + date_staffName
 
 const DEFAULT_PROPERTIES = [
   { name:'セブン四十九',  order:1,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
@@ -291,6 +320,19 @@ function getSavedOrder(staff,day){ return loadJSON(LS_ORDER_PREFIX+staff+'_'+day
 function setSavedOrder(staff,day,arr){ saveJSON(LS_ORDER_PREFIX+staff+'_'+day,arr); }
 function getLastData(name){ return loadJSON(LS_LASTDATA_PREFIX+name,null); }
 function setLastData(name,data,staff,date){ saveJSON(LS_LASTDATA_PREFIX+name,{data,staffName:staff,date}); }
+function saveHistory(date,staff,entryData){
+  saveJSON(LS_HISTORY_PREFIX+date+'_'+staff, {date,staffName:staff,entryData});
+  // keep index of all history keys
+  let idx=loadJSON('keiryo_hist_index',[]);
+  const key=date+'_'+staff;
+  if(!idx.includes(key)) idx.push(key);
+  saveJSON('keiryo_hist_index',idx);
+}
+function getAllHistory(){
+  const idx=loadJSON('keiryo_hist_index',[]);
+  return idx.map(k=>loadJSON(LS_HISTORY_PREFIX+k,null)).filter(Boolean)
+    .sort((a,b)=>b.date.localeCompare(a.date));
+}
 
 let allProperties = loadJSON(LS_PROPERTIES, DEFAULT_PROPERTIES);
 let staffList     = loadJSON(LS_STAFF, DEFAULT_STAFF);
@@ -321,11 +363,12 @@ function updateNav(n){
   const dl=document.getElementById('headerDateLabel');
   dl.textContent=(state.date&&state.dayName)?`${state.date}（${state.dayName}曜）`:'';
   // tabs active
-  ['navDate','navStaff','navProps','navSettings'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  ['navDate','navStaff','navProps','navHistory','navSettings'].forEach(id=>document.getElementById(id).classList.remove('active'));
   if(n===0) document.getElementById('navSettings').classList.add('active');
   else if(n===1) document.getElementById('navDate').classList.add('active');
   else if(n===2) document.getElementById('navStaff').classList.add('active');
   else if(n===3||n===4||n===5) document.getElementById('navProps').classList.add('active');
+  else if(n===6) document.getElementById('navHistory').classList.add('active');
   // enabled/disabled
   document.getElementById('navStaff').className='nav-tab'+(n===2?' active':'')+(state.date?'':' disabled');
   document.getElementById('navProps').className='nav-tab'+((n===3||n===4||n===5)?' active':'')+(state.selectedStaff?'':' disabled');
@@ -333,13 +376,13 @@ function updateNav(n){
 
 function showScreen(n){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(n===0?'screen0':`screen${n}`).classList.add('active');
+  document.getElementById(`screen${n}`).classList.add('active');
   updateNav(n);
   window.scrollTo(0,0);
 }
 
 function goBack(){
-  if(state.currentScreen===0){ showScreen(state.prevScreen||1); return; }
+  if(state.currentScreen===0||state.currentScreen===6){ showScreen(state.prevScreen||1); return; }
   if(state.currentScreen===4){ showScreen(3); return; }
   if(state.currentScreen>1) showScreen(state.currentScreen-1);
 }
@@ -351,6 +394,7 @@ function navTo(n){
   if(n===1){ showScreen(1); return; }
   if(n===2){ renderStaffList(); showScreen(2); return; }
   if(n===3){ renderPropertyList(); showScreen(3); return; }
+  if(n===6){ renderHistory(); showScreen(6); return; }
 }
 
 // ===== SCREEN 1→2 =====
@@ -624,6 +668,10 @@ function saveCurrentOrder(){
 
 // ===== SCREEN 3→5 =====
 function goToScreen5(){
+  // Auto-save to history when reaching confirm screen
+  if(Object.keys(state.entryData).length>0){
+    saveHistory(state.date, state.selectedStaff, state.entryData);
+  }
   const entered=Object.keys(state.entryData).length;
   document.getElementById('screen5sub').textContent=`${state.date}（${state.dayName}曜日）　担当：${state.selectedStaff}　${entered}/${allProperties.length}件入力済み`;
   const c=document.getElementById('summaryContent'); c.innerHTML='';
@@ -670,6 +718,117 @@ function selectSug(event,val){
   dd.classList.remove('open');
 }
 function hideFieldDropdown(input){ setTimeout(()=>{input.parentElement.querySelector('.field-dropdown').classList.remove('open');},200); }
+
+// ===== HISTORY =====
+function checkPastData(dateVal){
+  const banner=document.getElementById('pastDataBanner');
+  const entries=document.getElementById('pastDataEntries');
+  if(!dateVal){ banner.style.display='none'; return; }
+  const hist=getAllHistory().filter(h=>h.date===dateVal);
+  if(!hist.length){ banner.style.display='none'; return; }
+  const names=hist.map(h=>`${h.staffName}（${Object.keys(h.entryData).length}件）`).join('、');
+  entries.textContent=`担当：${names}`;
+  banner.style.display='block';
+  state._histFilterDate=dateVal;
+}
+
+function goToHistoryForDate(){
+  state._histFilterDate=document.getElementById('dateInput').value;
+  renderHistory(state._histFilterDate);
+  showScreen(6);
+}
+
+function renderHistory(filterDate){
+  const c=document.getElementById('historyList'); c.innerHTML='';
+  let hist=getAllHistory();
+  if(filterDate) hist=hist.filter(h=>h.date===filterDate);
+  if(!hist.length){
+    c.innerHTML='<div class="empty-state"><div class="icon">📭</div><div>履歴がありません</div></div>';
+    return;
+  }
+  hist.forEach((record,ri)=>{
+    const d=new Date(record.date+'T00:00:00');
+    const dayName=DAYS_JP[d.getDay()];
+    const enteredCount=Object.keys(record.entryData).length;
+    const div=document.createElement('div');
+    div.className='history-item';
+    // Build detail table
+    let tableRows='';
+    const sorted=[...allProperties].sort((a,b)=>(a.order||999)-(b.order||999));
+    sorted.forEach(prop=>{
+      const data=record.entryData[prop.name]; if(!data)return;
+      prop.fields.forEach((f,fi)=>{
+        const val=data[f.label];
+        if(val===''||val===undefined)return;
+        tableRows+=`<tr><td>${fi===0?prop.name:''}</td><td>${f.label}</td><td style="text-align:right;font-weight:600">${val}</td><td>${f.unit}</td></tr>`;
+      });
+    });
+    div.innerHTML=`
+      <div class="history-header" onclick="toggleHist(${ri})">
+        <div>
+          <div class="history-date">${record.date}（${dayName}曜日）</div>
+          <div class="history-staff">担当：${record.staffName}　${enteredCount}件</div>
+        </div>
+        <span style="color:#aaa;font-size:16px" id="harrow_${ri}">▼</span>
+      </div>
+      <div class="history-body" id="hbody_${ri}">
+        ${tableRows?`<table style="width:100%;border-collapse:collapse;font-size:13px">
+          <thead><tr style="background:#f0f4f8"><th style="padding:6px;text-align:left">物件</th><th style="padding:6px;text-align:left">項目</th><th style="padding:6px;text-align:right">値</th><th style="padding:6px">単位</th></tr></thead>
+          <tbody>${tableRows}</tbody></table>`:'<div style="color:#aaa;font-size:13px">データなし</div>'}
+        <div style="margin-top:10px;display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="reloadHistoryEntry(${ri},event)">このデータで再入力</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteHistory(${ri},event)">削除</button>
+        </div>
+      </div>`;
+    c.appendChild(div);
+  });
+}
+
+function toggleHist(ri){
+  const body=document.getElementById(`hbody_${ri}`);
+  const arrow=document.getElementById(`harrow_${ri}`);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  arrow.textContent=open?'▼':'▲';
+}
+
+function reloadHistoryEntry(ri,event){
+  event.stopPropagation();
+  let hist=getAllHistory();
+  const filterDate=state._histFilterDate||null;
+  if(filterDate) hist=hist.filter(h=>h.date===filterDate);
+  const record=hist[ri];
+  if(!record)return;
+  // Set state from history
+  state.date=record.date;
+  const d=new Date(record.date+'T00:00:00');
+  state.dayName=DAYS_JP[d.getDay()];
+  state.selectedStaff=record.staffName;
+  state.entryData={...record.entryData};
+  state.entryOrder=Object.keys(record.entryData);
+  document.getElementById('dateInput').value=record.date;
+  updateNav(3);
+  renderPropertyList();
+  showScreen(3);
+}
+
+function deleteHistory(ri,event){
+  event.stopPropagation();
+  if(!confirm('この履歴を削除しますか？'))return;
+  let hist=getAllHistory();
+  const filterDate=state._histFilterDate||null;
+  let displayed=filterDate?hist.filter(h=>h.date===filterDate):hist;
+  const record=displayed[ri];
+  if(!record)return;
+  // Remove from index
+  let idx=loadJSON('keiryo_hist_index',[]);
+  const key=record.date+'_'+record.staffName;
+  idx=idx.filter(k=>k!==key);
+  saveJSON('keiryo_hist_index',idx);
+  localStorage.removeItem(LS_HISTORY_PREFIX+key);
+  state._histFilterDate=filterDate;
+  renderHistory(filterDate);
+}
 
 // ===== SETTINGS SCREEN =====
 function renderSettingsStaff(){
