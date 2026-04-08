@@ -9,70 +9,102 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Hiragino Sans', 'Meiryo', sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
 
+  /* ===== HEADER ===== */
   .header { background: #1a6eb5; color: white; padding: 8px 14px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
   .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
-  .header-left { display: flex; align-items: center; gap: 10px; }
-  .back-date { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; white-space: nowrap; }
-  .header h1 { font-size: 16px; font-weight: bold; }
-  /* Nav tabs */
-  .nav-tabs { display: flex; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0; }
-  .nav-tab { flex-shrink: 0; padding: 7px 10px; font-size: 12px; font-weight: bold; color: rgba(255,255,255,0.7);
-    background: rgba(255,255,255,0.1); border: none; border-radius: 8px 8px 0 0; cursor: pointer;
-    transition: all 0.15s; white-space: nowrap; }
+  .header-left { display: flex; align-items: center; gap: 8px; }
+  .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 13px; font-weight: bold;
+    cursor: pointer; padding: 5px 10px; border-radius: 8px; display: none; align-items: center; gap: 4px; white-space: nowrap; }
+  .header-date { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; }
+  .header-title { font-size: 16px; font-weight: bold; }
+  .nav-tabs { display: flex; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .nav-tab { flex-shrink: 0; padding: 7px 10px; font-size: 12px; font-weight: bold;
+    color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.1); border: none;
+    border-radius: 8px 8px 0 0; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
   .nav-tab.active { background: white; color: #1a6eb5; }
   .nav-tab.disabled { opacity: 0.4; cursor: default; }
-  .nav-tab:not(.disabled):not(.active):active { background: rgba(255,255,255,0.25); }
 
+  /* ===== SCREENS ===== */
   .screen { display: none; padding: 16px; max-width: 500px; margin: 0 auto; }
   .screen.active { display: block; }
   .card { background: white; border-radius: 12px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
 
-  .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.15s; }
+  /* ===== BUTTONS ===== */
+  .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
   .btn-primary { background: #1a6eb5; color: white; }
-  .btn-primary:active { background: #1558a0; }
   .btn-secondary { background: #e2e8f0; color: #444; }
   .btn-success { background: #22c55e; color: white; }
   .btn-warning { background: #f59e0b; color: white; }
   .btn-danger { background: #fee2e2; color: #dc2626; }
+  .btn-enter { background: #1a6eb5; color: white; border: none; border-radius: 8px; padding: 10px 18px; font-size: 14px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 12px; }
   .btn-sm { padding: 8px 12px; font-size: 13px; border-radius: 8px; display: inline-block; width: auto; }
 
-  input[type="date"], input[type="text"] {
-    width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.2s;
-  }
-  input[type="number"]:not(.settings-order-input):not(.num-input) {
-    width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; outline: none; transition: border-color 0.2s;
-  }
+  /* ===== INPUTS ===== */
+  input[type="date"], input[type="text"] { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; outline: none; }
   input:focus { border-color: #1a6eb5; }
   .num-input { width: 100%; font-size: 22px; text-align: center; padding: 14px; border: 2px solid #e2e8f0; border-radius: 8px; outline: none; }
   .num-input:focus { border-color: #1a6eb5; }
 
-  .section-title { font-size: 20px; font-weight: bold; margin-bottom: 4px; color: #1a6eb5; }
-  .section-sub { font-size: 13px; color: #888; margin-bottom: 16px; }
-
+  /* ===== STAFF ===== */
   .staff-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 12px;
     background: white; border-radius: 10px; margin-bottom: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.07);
     cursor: pointer; border: 2px solid transparent; }
   .staff-item.selected { border-color: #1a6eb5; background: #eff6ff; }
   .staff-check { color: #1a6eb5; font-size: 20px; display: none; }
   .staff-item.selected .staff-check { display: block; }
+  .order-saved-badge { display: inline-block; background: #d1fae5; color: #065f46; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-left: 6px; }
 
-  /* Property list */
-  .property-item { display: flex; align-items: center; gap: 10px;
-    padding: 12px; background: white; border-radius: 10px; margin-bottom: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.07); cursor: pointer; border: 2px solid transparent; transition: all 0.15s; }
-  .property-item.done { border-color: #22c55e; background: #f0fdf4; }
-  .property-item:active { transform: scale(0.98); }
-  .prop-num { min-width: 28px; height: 28px; background: #dbeafe; color: #1e40af;
-    border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: bold; flex-shrink: 0; }
-  .property-item.done .prop-num { background: #bbf7d0; color: #166534; }
-  .prop-name { flex: 1; font-size: 16px; font-weight: 500; }
-  .prop-status { font-size: 22px; flex-shrink: 0; }
+  /* ===== COMBINED PROPERTY LIST+SETTINGS ===== */
+  .prop-card { background: white; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; border: 2px solid transparent; transition: border-color 0.2s; }
+  .prop-card.done { border-color: #22c55e; }
+  .prop-card-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
+  .prop-order-input { width: 40px !important; max-width: 40px !important; min-width: 40px !important;
+    padding: 5px 3px; text-align: center; font-size: 15px; font-weight: bold;
+    border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc; color: #1a6eb5;
+    flex-shrink: 0; outline: none; }
+  .prop-order-input:focus { border-color: #1a6eb5; }
+  .prop-info { flex: 1; min-width: 0; overflow: hidden; }
+  .prop-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .prop-days { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
+  .day-dot { font-size: 11px; padding: 2px 7px; border-radius: 10px; font-weight: bold; background: #e2e8f0; color: #94a3b8; }
+  .day-dot.today { background: #1a6eb5; color: white; }
+  .prop-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .prop-status-icon { font-size: 20px; }
+  .prop-toggle { color: #aaa; font-size: 14px; }
+
+  .prop-card-body { padding: 12px 14px; background: #fafafa; border-top: 1px solid #f0f0f0; display: none; }
+  .prop-card-body.open { display: block; }
+
+  /* Day checkboxes */
+  .day-checkboxes { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .day-check-label { display: flex; align-items: center; gap: 3px; background: #e2e8f0;
+    padding: 5px 10px; border-radius: 20px; cursor: pointer; font-size: 13px; font-weight: bold;
+    transition: all 0.15s; user-select: none; }
+  .day-check-label input { display: none; }
+  .day-check-label.checked { background: #1a6eb5; color: white; }
+  .day-check-label.today-day { outline: 2px solid #f59e0b; outline-offset: 1px; }
+
+  /* Field editor */
+  .fields-label { font-size: 12px; color: #888; margin-bottom: 6px; font-weight: 600; }
+  .field-edit-row { display: flex; gap: 5px; margin-bottom: 5px; align-items: center; }
+  .field-name-wrap { flex: 1; position: relative; }
+  .field-name-wrap input { padding: 7px; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%; outline: none; }
+  .field-name-wrap input:focus { border-color: #1a6eb5; }
+  .field-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white;
+    border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    z-index: 300; max-height: 180px; overflow-y: auto; display: none; }
+  .field-dropdown.open { display: block; }
+  .field-dropdown-item { padding: 9px 12px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
+  .field-dropdown-item:last-child { border-bottom: none; }
+  .field-dropdown-item:active { background: #eff6ff; }
+  .field-edit-row select { padding: 7px 4px; font-size: 13px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; width: 54px; }
 
   /* Data entry */
   .field-group { margin-bottom: 14px; }
   .field-label { font-size: 13px; color: #666; margin-bottom: 6px; font-weight: 600; }
   .field-unit { font-size: 12px; color: #999; margin-left: 4px; }
+  .last-val-hint { font-size: 12px; color: #aaa; margin-bottom: 4px; }
+  .last-val-hint span { font-weight: bold; color: #94a3b8; }
 
   /* Summary */
   .summary-table { width: 100%; border-collapse: collapse; font-size: 14px; }
@@ -80,66 +112,17 @@
   .summary-table td { padding: 8px; border-bottom: 1px solid #e2e8f0; }
   .summary-table tr:nth-child(even) td { background: #f8fafc; }
 
-  .day-tag { display: inline-block; background: #dbeafe; color: #1e40af; padding: 3px 10px;
-    border-radius: 20px; font-size: 13px; font-weight: bold; margin-left: 8px; }
-  .count-badge { display: inline-block; background: #1a6eb5; color: white; border-radius: 20px;
-    padding: 2px 10px; font-size: 13px; font-weight: bold; margin-left: 8px; }
-
+  /* Misc */
+  .section-title { font-size: 20px; font-weight: bold; margin-bottom: 4px; color: #1a6eb5; }
+  .section-sub { font-size: 13px; color: #888; margin-bottom: 16px; }
+  .count-badge { display: inline-block; background: #1a6eb5; color: white; border-radius: 20px; padding: 2px 10px; font-size: 13px; font-weight: bold; margin-left: 8px; }
   .add-row { display: flex; gap: 8px; margin-top: 8px; }
   .add-row input { flex: 1; }
-  .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 13px; font-weight: bold; cursor: pointer;
-    padding: 5px 10px; border-radius: 8px; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
   .empty-state { text-align: center; padding: 32px 16px; color: #aaa; }
-  .empty-state .icon { font-size: 48px; margin-bottom: 8px; }
-
-  /* Save order banner */
   .save-order-banner { background: #fef3c7; border: 1px solid #f59e0b; border-radius: 10px;
-    padding: 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    padding: 10px 12px; margin-bottom: 10px; display: none; align-items: center; justify-content: space-between; gap: 10px; }
   .save-order-banner span { font-size: 13px; color: #92400e; flex: 1; }
   .sort-hint { font-size: 12px; color: #aaa; text-align: center; padding: 2px 0 8px; }
-
-  /* Settings */
-  .settings-property-item { background: white; border-radius: 10px; margin-bottom: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.07); }
-  .settings-property-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; width: 100%; }
-  .settings-order-input { width: 42px !important; min-width: 42px; max-width: 42px; padding: 6px 4px; text-align: center;
-    font-size: 15px; font-weight: bold; border: 2px solid #e2e8f0; border-radius: 8px;
-    background: #f8fafc; color: #1a6eb5; flex-shrink: 0; outline: none; }
-  .settings-order-input:focus { border-color: #1a6eb5; }
-  .settings-property-info { flex: 1; overflow: hidden; min-width: 0; }
-  .settings-property-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .settings-property-days { font-size: 12px; color: #888; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .settings-toggle { color: #aaa; font-size: 16px; flex-shrink: 0; margin-left: 4px; }
-  .settings-property-body { padding: 12px 14px; background: #fafafa; border-top: 1px solid #f0f0f0; display: none; }
-  .settings-property-body.open { display: block; }
-
-  .day-checkboxes { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
-  .day-check-label { display: flex; align-items: center; gap: 4px; background: #e2e8f0;
-    padding: 6px 12px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: bold;
-    transition: all 0.15s; user-select: none; }
-  .day-check-label input { display: none; }
-  .day-check-label.checked { background: #1a6eb5; color: white; }
-
-  .fields-label { font-size: 13px; color: #666; margin-bottom: 8px; font-weight: 600; }
-  .field-edit-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
-  .field-name-wrap { flex: 1; position: relative; }
-  .field-name-wrap input { padding: 8px; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 6px; width: 100%; outline: none; }
-  .field-name-wrap input:focus { border-color: #1a6eb5; }
-  .field-dropdown { position: absolute; top: 100%; left: 0; right: 0; background: white;
-    border: 1px solid #e2e8f0; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);
-    z-index: 300; max-height: 200px; overflow-y: auto; display: none; }
-  .field-dropdown.open { display: block; }
-  .field-dropdown-item { padding: 10px 12px; font-size: 14px; cursor: pointer; border-bottom: 1px solid #f5f5f5; }
-  .field-dropdown-item:last-child { border-bottom: none; }
-  .field-dropdown-item:active { background: #eff6ff; }
-  .field-edit-row select { padding: 8px; font-size: 14px; border: 1px solid #e2e8f0; border-radius: 6px; background: white; width: 60px; }
-
-  .tab-bar { display: flex; gap: 4px; margin-bottom: 16px; }
-  .tab-btn { flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 14px; cursor: pointer; background: #e2e8f0; color: #666; font-weight: bold; }
-  .tab-btn.active { background: #1a6eb5; color: white; }
-
-  /* Saved order badge */
-  .order-saved-badge { display: inline-block; background: #d1fae5; color: #065f46;
-    font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
 </style>
 </head>
 <body>
@@ -147,16 +130,16 @@
 <div class="header">
   <div class="header-top">
     <div class="header-left">
-      <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">← 戻る</button>
-      <span class="back-date" id="headerDateLabel"></span>
+      <button class="back-btn" id="backBtn" onclick="goBack()">← 戻る</button>
+      <span class="header-date" id="headerDateLabel"></span>
     </div>
-    <h1 id="headerTitle">計量データ入力</h1>
+    <span class="header-title" id="headerTitle">計量データ入力</span>
   </div>
-  <div class="nav-tabs" id="navTabs">
+  <div class="nav-tabs">
     <button class="nav-tab active" id="navDate" onclick="navTo(1)">📅 日付選択</button>
     <button class="nav-tab disabled" id="navStaff" onclick="navTo(2)">👤 担当者</button>
     <button class="nav-tab disabled" id="navProps" onclick="navTo(3)">🏢 物件リスト</button>
-    <button class="nav-tab" id="navSettings" onclick="showSettings()">⚙️ 設定</button>
+    <button class="nav-tab" id="navSettings" onclick="navTo(0)">⚙️ 設定</button>
   </div>
 </div>
 
@@ -185,13 +168,13 @@
   </div>
 </div>
 
-<!-- Screen 3: Property List -->
+<!-- Screen 3: Combined property list + inline settings -->
 <div class="screen" id="screen3">
   <div style="padding-top:16px">
-    <div class="section-title">🏢 物件リスト<span class="day-tag" id="dayTag"></span><span class="count-badge" id="propCount"></span></div>
+    <div class="section-title">🏢 物件リスト<span class="count-badge" id="propCount"></span></div>
     <div class="section-sub" id="screen3sub"></div>
-    <div id="saveOrderBanner" style="display:none" class="save-order-banner">
-      <span>入力順を来週の初期順として保存しますか？</span>
+    <div id="saveOrderBanner" class="save-order-banner">
+      <span>💾 この入力順を来週用に保存しますか？</span>
       <button class="btn btn-warning btn-sm" onclick="saveCurrentOrder()">保存</button>
     </div>
     <div class="sort-hint" id="sortHint"></div>
@@ -200,10 +183,10 @@
   </div>
 </div>
 
-<!-- Screen 4: Data Entry -->
+<!-- Screen 4: Data entry -->
 <div class="screen" id="screen4">
   <div style="padding-top:16px">
-    <div class="section-title" id="propertyTitle"></div>
+    <div class="section-title" id="propEntryTitle"></div>
     <div class="section-sub">各項目に数値を入力してください</div>
     <div id="inputFields"></div>
     <button class="btn btn-primary" onclick="savePropertyData()">保存して戻る ✓</button>
@@ -218,68 +201,71 @@
     <div id="summaryContent"></div>
     <button class="btn btn-warning" onclick="saveCurrentOrder()" style="margin-bottom:10px">💾 この入力順を来週用に保存</button>
     <button class="btn btn-primary" onclick="exportXlsx()" style="margin-bottom:10px">📥 Excelで保存（.xlsx）</button>
-    <button class="btn btn-secondary" onclick="goToScreen3()">← 入力に戻る</button>
+    <button class="btn btn-secondary" onclick="navTo(3)">← 入力に戻る</button>
   </div>
 </div>
 
-<!-- Settings -->
-<div class="screen" id="screenSettings">
+<!-- Screen 0: Settings (add property + staff) -->
+<div class="screen" id="screen0">
   <div style="padding-top:16px">
     <div class="section-title">⚙️ 設定</div>
-    <div class="section-sub">物件の収集曜日・入力項目を設定します</div>
-    <div class="tab-bar">
-      <button class="tab-btn active" id="tabProperties" onclick="switchTab('properties')">物件・曜日設定</button>
-      <button class="tab-btn" id="tabAddProperty" onclick="switchTab('addProperty')">物件を追加</button>
-    </div>
-    <div id="tabContentProperties">
-      <div id="settingsPropertyList"></div>
-    </div>
-    <div id="tabContentAddProperty" style="display:none">
-      <div class="card">
-        <div class="field-group">
-          <div class="field-label">物件名</div>
-          <input type="text" id="newPropertyName" placeholder="例：セブン〇〇店">
+    <div class="section-sub">物件の追加・担当者の管理</div>
+
+    <!-- Add property -->
+    <div class="card">
+      <div style="font-size:15px;font-weight:700;margin-bottom:12px">＋ 物件を追加</div>
+      <div class="field-group">
+        <div class="fields-label">物件名</div>
+        <input type="text" id="newPropertyName" placeholder="例：セブン〇〇店">
+      </div>
+      <div class="field-group">
+        <div class="fields-label">収集曜日</div>
+        <div class="day-checkboxes" id="newPropertyDays">
+          <label class="day-check-label" onclick="toggleNewDay(this,'月',event)"><input type="checkbox">月</label>
+          <label class="day-check-label" onclick="toggleNewDay(this,'火',event)"><input type="checkbox">火</label>
+          <label class="day-check-label" onclick="toggleNewDay(this,'水',event)"><input type="checkbox">水</label>
+          <label class="day-check-label" onclick="toggleNewDay(this,'木',event)"><input type="checkbox">木</label>
+          <label class="day-check-label" onclick="toggleNewDay(this,'金',event)"><input type="checkbox">金</label>
+          <label class="day-check-label" onclick="toggleNewDay(this,'土',event)"><input type="checkbox">土</label>
+          <label class="day-check-label" onclick="toggleNewDay(this,'日',event)"><input type="checkbox">日</label>
         </div>
-        <div class="field-group">
-          <div class="field-label">収集曜日</div>
-          <div class="day-checkboxes" id="newPropertyDays">
-            <label class="day-check-label" onclick="toggleNewDay(this,'月',event)"><input type="checkbox">月</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'火',event)"><input type="checkbox">火</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'水',event)"><input type="checkbox">水</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'木',event)"><input type="checkbox">木</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'金',event)"><input type="checkbox">金</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'土',event)"><input type="checkbox">土</label>
-            <label class="day-check-label" onclick="toggleNewDay(this,'日',event)"><input type="checkbox">日</label>
+      </div>
+      <div class="fields-label">入力項目</div>
+      <div id="newPropertyFields">
+        <div class="field-edit-row">
+          <div class="field-name-wrap">
+            <input type="text" placeholder="項目名をタップ" onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this)" onblur="hideFieldDropdown(this)">
+            <div class="field-dropdown"></div>
           </div>
+          <select><option value="袋">袋</option><option value="kg">kg</option></select>
+          <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button>
         </div>
-        <div class="fields-label">入力項目</div>
-        <div id="newPropertyFields">
-          <div class="field-edit-row">
-            <div class="field-name-wrap">
-              <input type="text" placeholder="項目名をタップ" onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this)" onblur="hideFieldDropdown(this)">
-              <div class="field-dropdown"></div>
-            </div>
-            <select><option value="袋">袋</option><option value="kg">kg</option></select>
-            <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button>
-          </div>
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="addFieldRow()" style="margin-top:6px;margin-bottom:12px">＋ 項目を追加</button>
-        <button class="btn btn-success" onclick="addNewProperty()">物件を登録</button>
+      </div>
+      <button class="btn btn-secondary btn-sm" onclick="addFieldRow()" style="margin-top:6px;margin-bottom:12px">＋ 項目を追加</button>
+      <button class="btn btn-success" onclick="addNewProperty()">物件を登録</button>
+    </div>
+
+    <!-- Staff management -->
+    <div class="card">
+      <div style="font-size:15px;font-weight:700;margin-bottom:12px">👤 担当者管理</div>
+      <div id="settingsStaffList"></div>
+      <div class="add-row">
+        <input type="text" id="settingsNewStaff" placeholder="担当者名を追加" maxlength="20">
+        <button class="btn btn-secondary btn-sm" onclick="addStaffFromSettings()">追加</button>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const DAYS_JP = ['日','月','火','水','木','金','土'];
+const DAYS_JP   = ['日','月','火','水','木','金','土'];
 const ORDERED_DAYS = ['月','火','水','木','金','土','日'];
 const FIELD_SUGGESTIONS = ['可燃','不燃','生ごみ','段ボール','アラ','ペット','白','青','黒','段紙','紙','缶','びん','その他','廃プラ'];
-const LS_PROPERTIES = 'keigyo_properties';
-const LS_STAFF = 'keigyo_staff';
-const LS_ORDER_PREFIX = 'keigyo_order_'; // + staffName + '_' + dayName
-const LS_LASTDATA_PREFIX = 'keigyo_last_'; // + propertyName
+const LS_PROPERTIES    = 'keigyo_properties';
+const LS_STAFF         = 'keigyo_staff';
+const LS_ORDER_PREFIX  = 'keigyo_order_';
+const LS_LASTDATA_PREFIX = 'keigyo_last_';
 
-// ===== DEFAULT DATA =====
 const DEFAULT_PROPERTIES = [
   { name:'セブン四十九',  order:1,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
   { name:'セブン東町',    order:2,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
@@ -299,69 +285,54 @@ const DEFAULT_PROPERTIES = [
 ];
 const DEFAULT_STAFF = ['担当者A','担当者B'];
 
-// ===== LOAD FROM localStorage =====
+function loadJSON(key,def){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def; }catch(e){ return def; } }
+function saveJSON(key,val){ try{ localStorage.setItem(key,JSON.stringify(val)); }catch(e){} }
+function getSavedOrder(staff,day){ return loadJSON(LS_ORDER_PREFIX+staff+'_'+day,null); }
+function setSavedOrder(staff,day,arr){ saveJSON(LS_ORDER_PREFIX+staff+'_'+day,arr); }
+function getLastData(name){ return loadJSON(LS_LASTDATA_PREFIX+name,null); }
+function setLastData(name,data,staff,date){ saveJSON(LS_LASTDATA_PREFIX+name,{data,staffName:staff,date}); }
+
 let allProperties = loadJSON(LS_PROPERTIES, DEFAULT_PROPERTIES);
-let staffList = loadJSON(LS_STAFF, DEFAULT_STAFF);
-
-function loadJSON(key, def){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def; }catch(e){ return def; } }
-function saveJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
-
-function getSavedOrder(staffName, dayName){
-  return loadJSON(LS_ORDER_PREFIX+staffName+'_'+dayName, null);
-}
-function setSavedOrder(staffName, dayName, orderArr){
-  saveJSON(LS_ORDER_PREFIX+staffName+'_'+dayName, orderArr);
-}
-function getLastData(propName){
-  return loadJSON(LS_LASTDATA_PREFIX+propName, null);
-}
-function setLastData(propName, data, staffName, date){
-  saveJSON(LS_LASTDATA_PREFIX+propName, {data, staffName, date});
-}
+let staffList     = loadJSON(LS_STAFF, DEFAULT_STAFF);
 
 let state = {
   date:'', dayName:'', selectedStaff:'',
-  properties:[], currentPropertyIndex:-1,
+  currentPropertyIndex:-1,
   entryData:{}, entryOrder:[],
   currentScreen:1, prevScreen:1
 };
 
 // ===== INIT =====
 window.onload = function(){
-  const today = new Date();
-  document.getElementById('dateInput').value = today.toISOString().slice(0,10);
-  updateProgress(1);
+  const t=new Date();
+  document.getElementById('dateInput').value=t.toISOString().slice(0,10);
+  updateNav(1);
 };
 
 // ===== NAVIGATION =====
-function updateProgress(n){
+function updateNav(n){
   state.currentScreen=n;
   document.getElementById('backBtn').style.display=(n>1||n===0)?'flex':'none';
   const titles={0:'設定',1:'計量データ入力',2:'担当者選択',3:'物件リスト',4:'データ入力',5:'確認・保存'};
   document.getElementById('headerTitle').textContent=titles[n]||'';
-  // Update date label in header
   const dl=document.getElementById('headerDateLabel');
-  if(state.date && state.dayName) dl.textContent=`${state.date}（${state.dayName}）`;
-  else dl.textContent='';
-  // Update nav tabs
-  const tabMap={1:'navDate',2:'navStaff',3:'navProps',5:'navProps'};
-  ['navDate','navStaff','navProps','navSettings'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el){ el.classList.remove('active'); }
-  });
-  if(n===0){ document.getElementById('navSettings').classList.add('active'); }
-  else if(tabMap[n]){ document.getElementById(tabMap[n]).classList.add('active'); }
-  // Enable/disable tabs based on state
-  document.getElementById('navStaff').className='nav-tab'+(state.date?'':' disabled')+(n===2?' active':'');
-  document.getElementById('navProps').className='nav-tab'+(state.selectedStaff?'':' disabled')+(n===3||n===5?' active':'');
+  dl.textContent=(state.date&&state.dayName)?`${state.date}（${state.dayName}曜）`:'';
+  // tabs active
+  ['navDate','navStaff','navProps','navSettings'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(n===0) document.getElementById('navSettings').classList.add('active');
+  else if(n===1) document.getElementById('navDate').classList.add('active');
+  else if(n===2) document.getElementById('navStaff').classList.add('active');
+  else if(n===3||n===4||n===5) document.getElementById('navProps').classList.add('active');
+  // enabled/disabled
+  document.getElementById('navStaff').className='nav-tab'+(n===2?' active':'')+(state.date?'':' disabled');
+  document.getElementById('navProps').className='nav-tab'+((n===3||n===4||n===5)?' active':'')+(state.selectedStaff?'':' disabled');
 }
 
-function navTo(n){
-  if(n===2 && !state.date){ return; }
-  if(n===3 && !state.selectedStaff){ return; }
-  if(n===1) showScreen(1);
-  else if(n===2){ renderStaffList(); showScreen(2); }
-  else if(n===3){ renderPropertyList(); showScreen(3); }
+function showScreen(n){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(n===0?'screen0':`screen${n}`).classList.add('active');
+  updateNav(n);
+  window.scrollTo(0,0);
 }
 
 function goBack(){
@@ -370,17 +341,13 @@ function goBack(){
   if(state.currentScreen>1) showScreen(state.currentScreen-1);
 }
 
-function showScreen(n){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(n===0?'screenSettings':`screen${n}`).classList.add('active');
-  updateProgress(n);
-  window.scrollTo(0,0);
-}
-
-function showSettings(){
-  state.prevScreen=state.currentScreen;
-  renderSettingsPropertyList();
-  showScreen(0);
+function navTo(n){
+  if(n===2&&!state.date) return;
+  if(n===3&&!state.selectedStaff) return;
+  if(n===0){ state.prevScreen=state.currentScreen; renderSettingsStaff(); showScreen(0); return; }
+  if(n===1){ showScreen(1); return; }
+  if(n===2){ renderStaffList(); showScreen(2); return; }
+  if(n===3){ renderPropertyList(); showScreen(3); return; }
 }
 
 // ===== SCREEN 1→2 =====
@@ -396,11 +363,11 @@ function goToScreen2(){
 function renderStaffList(){
   const c=document.getElementById('staffList'); c.innerHTML='';
   staffList.forEach(name=>{
-    const savedOrder=getSavedOrder(name, state.dayName);
-    const badge=savedOrder?`<span class="order-saved-badge">順番保存済み</span>`:'';
+    const saved=getSavedOrder(name,state.dayName);
+    const badge=saved?`<span class="order-saved-badge">順番保存済み</span>`:'';
     const div=document.createElement('div');
     div.className='staff-item'+(state.selectedStaff===name?' selected':'');
-    div.innerHTML=`<div><span style="font-size:17px;font-weight:500">${name}</span>${badge}</div>
+    div.innerHTML=`<div><span style="font-size:16px;font-weight:500">${name}</span>${badge}</div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="staff-check">✓</span>
         <button class="btn btn-danger btn-sm" onclick="removeStaff('${name}',event)">削除</button>
@@ -411,61 +378,50 @@ function renderStaffList(){
 }
 
 function addStaff(){
-  const inp=document.getElementById('newStaffName'); const name=inp.value.trim();
+  const inp=document.getElementById('newStaffName');const name=inp.value.trim();
   if(!name||staffList.includes(name)){alert(name?'同じ名前が既に登録されています':'名前を入力してください');return;}
-  staffList.push(name); saveJSON(LS_STAFF, staffList); inp.value=''; renderStaffList();
+  staffList.push(name);saveJSON(LS_STAFF,staffList);inp.value='';renderStaffList();
 }
-
 function removeStaff(name,e){
-  e.stopPropagation();
-  if(!confirm(`「${name}」を削除しますか？`))return;
-  staffList=staffList.filter(s=>s!==name); saveJSON(LS_STAFF,staffList);
-  if(state.selectedStaff===name)state.selectedStaff='';
-  renderStaffList();
+  e.stopPropagation();if(!confirm(`「${name}」を削除しますか？`))return;
+  staffList=staffList.filter(s=>s!==name);saveJSON(LS_STAFF,staffList);
+  if(state.selectedStaff===name)state.selectedStaff='';renderStaffList();
 }
 
 // ===== SCREEN 2→3 =====
 function goToScreen3(){
   if(!state.selectedStaff){alert('担当者を選択してください');return;}
-  let props=allProperties.filter(p=>p.days.includes(state.dayName));
+  state.entryData={};state.entryOrder=[];
+  document.getElementById('propCount').textContent=allProperties.length+'件';
+  document.getElementById('screen3sub').textContent=`担当：${state.selectedStaff}`;
+  renderPropertyList();showScreen(3);
+}
 
-  // Apply saved order if exists
-  const savedOrder=getSavedOrder(state.selectedStaff, state.dayName);
-  if(savedOrder && savedOrder.length>0){
-    const orderedNames=[...savedOrder, ...props.map(p=>p.name).filter(n=>!savedOrder.includes(n))];
-    props.sort((a,b)=>orderedNames.indexOf(a.name)-orderedNames.indexOf(b.name));
-    // Renumber display order
-    props.forEach((p,i)=>p._displayOrder=i+1);
+function getSortedProps(){
+  // Apply saved order if exists; else sort by order number
+  const saved=getSavedOrder(state.selectedStaff,state.dayName);
+  let props=[...allProperties];
+  if(saved&&saved.length){
+    const names=[...saved,...props.map(p=>p.name).filter(n=>!saved.includes(n))];
+    props.sort((a,b)=>names.indexOf(a.name)-names.indexOf(b.name));
   } else {
     props.sort((a,b)=>(a.order||999)-(b.order||999));
-    props.forEach((p,i)=>p._displayOrder=p.order||i+1);
   }
-
-  state.properties=props;
-  state.entryOrder=[];
-  document.getElementById('dayTag').textContent=state.dayName+'曜日';
-  document.getElementById('propCount').textContent=props.length+'件';
-  document.getElementById('screen3sub').textContent=`担当：${state.selectedStaff}`;
-  document.getElementById('saveOrderBanner').style.display='none';
-  renderPropertyList(); showScreen(3);
+  return props;
 }
 
 function renderPropertyList(){
   const c=document.getElementById('propertyList'); c.innerHTML='';
   const hint=document.getElementById('sortHint');
   const banner=document.getElementById('saveOrderBanner');
+  const baseProps=getSortedProps();
 
-  if(!state.properties.length){
-    c.innerHTML='<div class="empty-state"><div class="icon">📭</div><div>この曜日に登録された物件はありません<br><small>⚙️設定から収集曜日を登録してください</small></div></div>';
-    hint.textContent=''; return;
-  }
+  // Entry order first, then remaining
+  const entered=state.entryOrder.map(n=>baseProps.find(p=>p.name===n)).filter(Boolean);
+  const remaining=baseProps.filter(p=>!state.entryOrder.includes(p.name));
+  const displayList=[...entered,...remaining];
 
-  // Display: entered ones first (in entry order), then remaining
-  const enteredProps = state.entryOrder.map(n=>state.properties.find(p=>p.name===n)).filter(Boolean);
-  const remaining = state.properties.filter(p=>!state.entryOrder.includes(p.name));
-  const displayList = [...enteredProps, ...remaining];
-
-  const hasSaved=!!getSavedOrder(state.selectedStaff, state.dayName);
+  const hasSaved=!!getSavedOrder(state.selectedStaff,state.dayName);
   if(state.entryOrder.length>0){
     hint.textContent='✅ 入力済みが上に並んでいます';
     banner.style.display='flex';
@@ -473,106 +429,221 @@ function renderPropertyList(){
     hint.textContent='📌 前回の入力順で表示中';
     banner.style.display='none';
   } else {
-    hint.textContent='設定の番号順で表示中';
+    hint.textContent='番号順で表示中';
     banner.style.display='none';
   }
 
-  displayList.forEach((prop,dispIdx)=>{
+  displayList.forEach((prop,di)=>{
     const done=!!state.entryData[prop.name];
-    const globalIdx=state.properties.indexOf(prop);
-    const dispNum = state.entryOrder.includes(prop.name)
-      ? state.entryOrder.indexOf(prop.name)+1
-      : prop._displayOrder||prop.order||dispIdx+1;
+    const idx=allProperties.indexOf(prop);
+    const dispNum=state.entryOrder.includes(prop.name)
+      ?(state.entryOrder.indexOf(prop.name)+1)
+      :(prop.order||di+1);
     const div=document.createElement('div');
-    div.className='property-item'+(done?' done':'');
+    div.className='prop-card'+(done?' done':'');
+    div.id=`propcard_${idx}`;
+
+    // Day dots
+    const dayDots=ORDERED_DAYS.map(d=>{
+      const assigned=prop.days.includes(d);
+      const isToday=d===state.dayName;
+      if(!assigned) return `<span class="day-dot" style="opacity:0.25">${d}</span>`;
+      return `<span class="day-dot${isToday?' today':''}">${d}</span>`;
+    }).join('');
+
+    // Field editor rows for body
+    const fieldRows=prop.fields.map((f,fi)=>`
+      <div class="field-edit-row">
+        <div class="field-name-wrap">
+          <input type="text" value="${f.label}" placeholder="項目名" onfocus="showFieldDropdown(this)"
+            oninput="filterFieldDropdown(this);updateFL(${idx},${fi},this.value)"
+            onchange="updateFL(${idx},${fi},this.value)" onblur="hideFieldDropdown(this)">
+          <div class="field-dropdown"></div>
+        </div>
+        <select onchange="updateFU(${idx},${fi},this.value)">
+          <option value="袋" ${f.unit==='袋'?'selected':''}>袋</option>
+          <option value="kg" ${f.unit==='kg'?'selected':''}>kg</option>
+        </select>
+        <button class="btn btn-danger btn-sm" onclick="removeFieldInline(${idx},${fi},event)">✕</button>
+      </div>`).join('');
+
+    // Day checkboxes for body
+    const dayCBs=ORDERED_DAYS.map(d=>{
+      const ch=prop.days.includes(d);
+      const isToday=d===state.dayName;
+      return `<label class="day-check-label${ch?' checked':''}${isToday?' today-day':''}" onclick="toggleDayInline(${idx},'${d}',this,event)">
+        <input type="checkbox" ${ch?'checked':''}>${d}</label>`;
+    }).join('');
+
     div.innerHTML=`
-      <div class="prop-num">${dispNum}</div>
-      <span class="prop-name">${prop.name}</span>
-      <span class="prop-status">${done?'✅':'▶'}</span>`;
-    div.onclick=()=>goToScreen4(globalIdx);
+      <div class="prop-card-header" onclick="togglePropCard(${idx})">
+        <input class="prop-order-input" type="number" min="1" value="${prop.order||''}" placeholder="#"
+          onclick="event.stopPropagation()" onchange="updatePropOrder(${idx},this.value)">
+        <div class="prop-info">
+          <div class="prop-name">${prop.name}</div>
+          <div class="prop-days">${dayDots}</div>
+        </div>
+        <div class="prop-right">
+          <span class="prop-status-icon">${done?'✅':'▶'}</span>
+          <span class="prop-toggle" id="ptoggle_${idx}">▼</span>
+        </div>
+      </div>
+      <div class="prop-card-body" id="pbody_${idx}">
+        <div class="fields-label">収集曜日（今日の曜日が青）</div>
+        <div class="day-checkboxes">${dayCBs}</div>
+        <div class="fields-label">入力項目</div>
+        <div id="pfields_${idx}">${fieldRows}</div>
+        <button class="btn btn-secondary btn-sm" onclick="addFieldInline(${idx},event)" style="margin-top:4px">＋ 項目追加</button>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn-enter" onclick="openEntry(${idx},event)">${done?'✏️ 修正する':'📝 入力する'}</button>
+        </div>
+        <div style="margin-top:8px">
+          <button class="btn btn-danger btn-sm" onclick="deleteProp(${idx},event)">この物件を削除</button>
+        </div>
+      </div>`;
     c.appendChild(div);
   });
 }
 
-// ===== SAVE ORDER =====
-function saveCurrentOrder(){
-  const orderArr=state.entryOrder.length>0
-    ? [...state.entryOrder, ...state.properties.filter(p=>!state.entryOrder.includes(p.name)).map(p=>p.name)]
-    : state.properties.map(p=>p.name);
-  setSavedOrder(state.selectedStaff, state.dayName, orderArr);
-  document.getElementById('saveOrderBanner').style.display='none';
-  alert(`${state.selectedStaff}（${state.dayName}曜日）の入力順を保存しました。来週から自動的にこの順番で表示されます。`);
+function togglePropCard(idx){
+  const body=document.getElementById(`pbody_${idx}`);
+  const arrow=document.getElementById(`ptoggle_${idx}`);
+  const open=body.classList.contains('open');
+  body.classList.toggle('open',!open);
+  arrow.textContent=open?'▼':'▲';
 }
 
-// ===== SCREEN 3→4 =====
-function goToScreen4(idx){
+function updatePropOrder(idx,val){
+  allProperties[idx].order=val?parseInt(val):999;
+  saveJSON(LS_PROPERTIES,allProperties);
+}
+
+function toggleDayInline(idx,day,label,event){
+  event.preventDefault(); event.stopPropagation();
+  const prop=allProperties[idx];
+  if(prop.days.includes(day)){prop.days=prop.days.filter(d=>d!==day);label.classList.remove('checked');}
+  else{prop.days.push(day);label.classList.add('checked');}
+  prop.days.sort((a,b)=>ORDERED_DAYS.indexOf(a)-ORDERED_DAYS.indexOf(b));
+  saveJSON(LS_PROPERTIES,allProperties);
+  // Update dots in header
+  const card=document.getElementById(`propcard_${idx}`);
+  if(card){
+    const dotsEl=card.querySelector('.prop-days');
+    if(dotsEl){
+      dotsEl.innerHTML=ORDERED_DAYS.map(d=>{
+        const assigned=allProperties[idx].days.includes(d);
+        const isToday=d===state.dayName;
+        if(!assigned) return `<span class="day-dot" style="opacity:0.25">${d}</span>`;
+        return `<span class="day-dot${isToday?' today':''}">${d}</span>`;
+      }).join('');
+    }
+  }
+}
+
+function updateFL(propIdx,fieldIdx,val){allProperties[propIdx].fields[fieldIdx].label=val;saveJSON(LS_PROPERTIES,allProperties);}
+function updateFU(propIdx,fieldIdx,val){allProperties[propIdx].fields[fieldIdx].unit=val;saveJSON(LS_PROPERTIES,allProperties);}
+
+function removeFieldInline(propIdx,fieldIdx,event){
+  event.stopPropagation();
+  allProperties[propIdx].fields.splice(fieldIdx,1);
+  saveJSON(LS_PROPERTIES,allProperties);
+  renderPropertyList();
+  document.getElementById(`pbody_${propIdx}`).classList.add('open');
+  document.getElementById(`ptoggle_${propIdx}`).textContent='▲';
+}
+
+function addFieldInline(propIdx,event){
+  event.stopPropagation();
+  allProperties[propIdx].fields.push({label:'',unit:'袋'});
+  saveJSON(LS_PROPERTIES,allProperties);
+  renderPropertyList();
+  document.getElementById(`pbody_${propIdx}`).classList.add('open');
+  document.getElementById(`ptoggle_${propIdx}`).textContent='▲';
+}
+
+function deleteProp(idx,event){
+  event.stopPropagation();
+  if(!confirm(`「${allProperties[idx].name}」を削除しますか？`))return;
+  allProperties.splice(idx,1);
+  saveJSON(LS_PROPERTIES,allProperties);
+  renderPropertyList();
+}
+
+// ===== OPEN ENTRY =====
+function openEntry(idx,event){
+  event.stopPropagation();
   state.currentPropertyIndex=idx;
-  const prop=state.properties[idx];
-  document.getElementById('propertyTitle').textContent=prop.name;
+  const prop=allProperties[idx];
+  document.getElementById('propEntryTitle').textContent=prop.name;
   const existing=state.entryData[prop.name]||{};
+  const lastSaved=getLastData(prop.name);
   const c=document.getElementById('inputFields'); c.innerHTML='';
-  const lastSaved = getLastData(prop.name);
   prop.fields.forEach(field=>{
     const div=document.createElement('div');
     div.className='field-group card';
-    let hintHtml = '';
-    if(lastSaved && lastSaved.data && lastSaved.data[field.label] !== undefined && lastSaved.data[field.label] !== ''){
-      hintHtml = `<div style="font-size:12px;color:#aaa;margin-bottom:4px">前回（${lastSaved.date}・${lastSaved.staffName}）：<span style="font-weight:bold;color:#94a3b8">${lastSaved.data[field.label]} ${field.unit}</span></div>`;
+    let hint='';
+    if(lastSaved&&lastSaved.data&&lastSaved.data[field.label]!==undefined&&lastSaved.data[field.label]!==''){
+      hint=`<div class="last-val-hint">前回（${lastSaved.date}・${lastSaved.staffName}）：<span>${lastSaved.data[field.label]} ${field.unit}</span></div>`;
     }
     div.innerHTML=`<div class="field-label">${field.label}<span class="field-unit">（${field.unit}）</span></div>
-      ${hintHtml}
+      ${hint}
       <input type="number" class="num-input" inputmode="decimal" min="0" step="0.1"
-        id="field_${field.label}" placeholder="0" value="${existing[field.label]!==undefined?existing[field.label]:''}">`;
+        id="ef_${field.label}" placeholder="0" value="${existing[field.label]!==undefined?existing[field.label]:''}">`;
     c.appendChild(div);
   });
   showScreen(4);
 }
 
 function savePropertyData(){
-  const prop=state.properties[state.currentPropertyIndex];
+  const prop=allProperties[state.currentPropertyIndex];
   const data={}; let hasVal=false;
   prop.fields.forEach(f=>{
-    const v=document.getElementById(`field_${f.label}`).value;
+    const v=document.getElementById(`ef_${f.label}`).value;
     data[f.label]=v!==''?parseFloat(v):'';
     if(v!=='')hasVal=true;
   });
   if(!hasVal&&!confirm('値が入力されていません。空のまま保存しますか？'))return;
   state.entryData[prop.name]=data;
-  setLastData(prop.name, data, state.selectedStaff, state.date);
+  setLastData(prop.name,data,state.selectedStaff,state.date);
   state.entryOrder=state.entryOrder.filter(n=>n!==prop.name);
   state.entryOrder.push(prop.name);
-  renderPropertyList(); showScreen(3);
+  renderPropertyList();showScreen(3);
+}
+
+// ===== SAVE ORDER =====
+function saveCurrentOrder(){
+  const base=getSortedProps();
+  const ordered=[...state.entryOrder,...base.filter(p=>!state.entryOrder.includes(p.name)).map(p=>p.name)];
+  setSavedOrder(state.selectedStaff,state.dayName,ordered);
+  document.getElementById('saveOrderBanner').style.display='none';
+  alert(`${state.selectedStaff}（${state.dayName}曜日）の入力順を保存しました。`);
 }
 
 // ===== SCREEN 3→5 =====
 function goToScreen5(){
   const entered=Object.keys(state.entryData).length;
-  document.getElementById('screen5sub').textContent=`${state.date}（${state.dayName}曜日）　担当：${state.selectedStaff}　${entered}/${state.properties.length}件入力済み`;
-  renderSummary(); showScreen(5);
-}
-
-function renderSummary(){
-  const c=document.getElementById('summaryContent');
-  if(!Object.keys(state.entryData).length){
-    c.innerHTML='<div class="empty-state"><div>まだ入力データがありません</div></div>'; return;
-  }
+  document.getElementById('screen5sub').textContent=`${state.date}（${state.dayName}曜日）　担当：${state.selectedStaff}　${entered}/${allProperties.length}件入力済み`;
+  const c=document.getElementById('summaryContent'); c.innerHTML='';
+  if(!entered){c.innerHTML='<div class="empty-state"><div>まだ入力データがありません</div></div>';return;}
   let html='<div class="card"><table class="summary-table"><thead><tr><th>物件</th><th>項目</th><th>値</th><th>単位</th></tr></thead><tbody>';
-  state.properties.forEach(prop=>{
-    const data=state.entryData[prop.name]; if(!data)return;
+  const sorted=getSortedProps();
+  sorted.forEach(prop=>{
+    const data=state.entryData[prop.name];if(!data)return;
     prop.fields.forEach((f,fi)=>{
       html+=`<tr><td>${fi===0?prop.name:''}</td><td>${f.label}</td><td>${data[f.label]!==''&&data[f.label]!==undefined?data[f.label]:'-'}</td><td>${f.unit}</td></tr>`;
     });
   });
   html+='</tbody></table></div>';
   c.innerHTML=html;
+  showScreen(5);
 }
 
 function exportXlsx(){
   const wb=XLSX.utils.book_new();
   const rows=[['物件名','項目','値','単位','日付','担当者']];
-  state.properties.forEach(prop=>{
-    const data=state.entryData[prop.name]; if(!data)return;
-    prop.fields.forEach(f=>{rows.push([prop.name,f.label,data[f.label]!==''?data[f.label]:'',f.unit,state.date,state.selectedStaff]);});
+  getSortedProps().forEach(prop=>{
+    const data=state.entryData[prop.name];if(!data)return;
+    prop.fields.forEach(f=>rows.push([prop.name,f.label,data[f.label]!==''?data[f.label]:'',f.unit,state.date,state.selectedStaff]));
   });
   const ws=XLSX.utils.aoa_to_sheet(rows);
   ws['!cols']=[{wch:20},{wch:12},{wch:10},{wch:8},{wch:14},{wch:14}];
@@ -580,196 +651,83 @@ function exportXlsx(){
   XLSX.writeFile(wb,`計量データ_${state.date.replace(/-/g,'')}_${state.selectedStaff}.xlsx`);
 }
 
-// ===== FIELD SUGGESTIONS =====
-function showFieldDropdown(input){
-  renderDropdown(input.parentElement.querySelector('.field-dropdown'), input.value);
+// ===== FIELD DROPDOWN =====
+function showFieldDropdown(input){ renderDropdown(input.parentElement.querySelector('.field-dropdown'),input.value); }
+function filterFieldDropdown(input){ renderDropdown(input.parentElement.querySelector('.field-dropdown'),input.value); }
+function renderDropdown(dd,q){
+  const f=FIELD_SUGGESTIONS.filter(s=>s.includes(q)||q==='');
+  dd.innerHTML=f.map(s=>`<div class="field-dropdown-item" onmousedown="selectSug(event,'${s}')">${s}</div>`).join('');
+  dd.classList.toggle('open',f.length>0);
 }
-function filterFieldDropdown(input){
-  renderDropdown(input.parentElement.querySelector('.field-dropdown'), input.value);
-}
-function renderDropdown(dd, query){
-  const filtered=FIELD_SUGGESTIONS.filter(s=>s.includes(query)||query==='');
-  dd.innerHTML=filtered.map(s=>`<div class="field-dropdown-item" onmousedown="selectFieldSuggestion(event,'${s}')">${s}</div>`).join('');
-  dd.classList.toggle('open', filtered.length>0);
-}
-function selectFieldSuggestion(event, value){
+function selectSug(event,val){
   event.preventDefault();
   const dd=event.target.closest('.field-dropdown');
-  dd.previousElementSibling.value=value;
+  dd.previousElementSibling.value=val;
+  dd.previousElementSibling.dispatchEvent(new Event('change'));
   dd.classList.remove('open');
 }
-function hideFieldDropdown(input){
-  setTimeout(()=>{ input.parentElement.querySelector('.field-dropdown').classList.remove('open'); },200);
-}
+function hideFieldDropdown(input){ setTimeout(()=>{input.parentElement.querySelector('.field-dropdown').classList.remove('open');},200); }
 
-// ===== SETTINGS =====
-function switchTab(tab){
-  document.getElementById('tabContentProperties').style.display=tab==='properties'?'block':'none';
-  document.getElementById('tabContentAddProperty').style.display=tab==='addProperty'?'block':'none';
-  document.getElementById('tabProperties').className='tab-btn'+(tab==='properties'?' active':'');
-  document.getElementById('tabAddProperty').className='tab-btn'+(tab==='addProperty'?' active':'');
-}
-
-function renderSettingsPropertyList(){
-  const c=document.getElementById('settingsPropertyList'); c.innerHTML='';
-  const sorted=[...allProperties].sort((a,b)=>(a.order||999)-(b.order||999));
-  sorted.forEach(prop=>{
-    const idx=allProperties.indexOf(prop);
-    const dayStr=prop.days.length?prop.days.join('・')+'曜日':'曜日未設定';
+// ===== SETTINGS SCREEN =====
+function renderSettingsStaff(){
+  const c=document.getElementById('settingsStaffList'); c.innerHTML='';
+  staffList.forEach(name=>{
     const div=document.createElement('div');
-    div.className='settings-property-item';
-    div.innerHTML=`
-      <div class="settings-property-header" onclick="toggleSettingsItem(${idx})">
-        <input class="settings-order-input" type="number" min="1" value="${prop.order||''}"
-          placeholder="#" onclick="event.stopPropagation()" onchange="updateOrder(${idx},this.value)">
-        <div class="settings-property-info">
-          <div class="settings-property-name">${prop.name}</div>
-          <div class="settings-property-days" id="dayDisplay_${idx}">${dayStr}</div>
-        </div>
-        <span class="settings-toggle" id="arrow_${idx}">▼</span>
-      </div>
-      <div class="settings-property-body" id="body_${idx}">
-        <div style="font-size:13px;color:#666;margin-bottom:6px;font-weight:600">収集曜日</div>
-        <div class="day-checkboxes">
-          ${ORDERED_DAYS.map(d=>`
-            <label class="day-check-label ${prop.days.includes(d)?'checked':''}" onclick="toggleDay(${idx},'${d}',this,event)">
-              <input type="checkbox" ${prop.days.includes(d)?'checked':''}>${d}
-            </label>`).join('')}
-        </div>
-        <div class="fields-label">入力項目</div>
-        <div id="fields_${idx}">
-          ${prop.fields.map((f,fi)=>`
-            <div class="field-edit-row">
-              <div class="field-name-wrap">
-                <input type="text" value="${f.label}" placeholder="項目名をタップ"
-                  onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this);updateFieldLabel(${idx},${fi},this.value)"
-                  onchange="updateFieldLabel(${idx},${fi},this.value)" onblur="hideFieldDropdown(this)">
-                <div class="field-dropdown"></div>
-              </div>
-              <select onchange="updateFieldUnit(${idx},${fi},this.value)">
-                <option value="袋" ${f.unit==='袋'?'selected':''}>袋</option>
-                <option value="kg" ${f.unit==='kg'?'selected':''}>kg</option>
-              </select>
-              <button class="btn btn-danger btn-sm" onclick="removeField(${idx},${fi})">✕</button>
-            </div>`).join('')}
-        </div>
-        <button class="btn btn-secondary btn-sm" onclick="addField(${idx})" style="margin-top:4px">＋ 項目追加</button>
-        <div style="margin-top:10px">
-          <button class="btn btn-danger btn-sm" onclick="deleteProperty(${idx})">この物件を削除</button>
-        </div>
-      </div>`;
+    div.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid #f0f0f0;';
+    div.innerHTML=`<span style="font-size:15px">${name}</span>
+      <button class="btn btn-danger btn-sm" onclick="removeStaffSettings('${name}')">削除</button>`;
     c.appendChild(div);
   });
-  const total=document.createElement('div');
-  total.style.cssText='text-align:center;color:#888;font-size:13px;padding:8px 0 16px';
-  total.textContent=`物件総数：${allProperties.length}件`;
-  c.appendChild(total);
 }
-
-function toggleSettingsItem(idx){
-  const body=document.getElementById(`body_${idx}`);
-  const arrow=document.getElementById(`arrow_${idx}`);
-  const open=body.classList.contains('open');
-  body.classList.toggle('open',!open);
-  arrow.textContent=open?'▼':'▲';
+function removeStaffSettings(name){
+  if(!confirm(`「${name}」を削除しますか？`))return;
+  staffList=staffList.filter(s=>s!==name);saveJSON(LS_STAFF,staffList);
+  if(state.selectedStaff===name)state.selectedStaff='';
+  renderSettingsStaff();
 }
-
-function updateOrder(idx,val){
-  allProperties[idx].order=val?parseInt(val):999;
-  saveJSON(LS_PROPERTIES, allProperties);
-}
-
-function toggleDay(idx,day,label,event){
-  event.preventDefault();
-  const prop=allProperties[idx];
-  if(prop.days.includes(day)){ prop.days=prop.days.filter(d=>d!==day); label.classList.remove('checked'); }
-  else { prop.days.push(day); label.classList.add('checked'); }
-  prop.days.sort((a,b)=>ORDERED_DAYS.indexOf(a)-ORDERED_DAYS.indexOf(b));
-  document.getElementById(`dayDisplay_${idx}`).textContent=prop.days.length?prop.days.join('・')+'曜日':'曜日未設定';
-  saveJSON(LS_PROPERTIES, allProperties);
-}
-
-function updateFieldLabel(propIdx,fieldIdx,val){
-  allProperties[propIdx].fields[fieldIdx].label=val;
-  saveJSON(LS_PROPERTIES, allProperties);
-}
-function updateFieldUnit(propIdx,fieldIdx,val){
-  allProperties[propIdx].fields[fieldIdx].unit=val;
-  saveJSON(LS_PROPERTIES, allProperties);
-}
-
-function removeField(propIdx,fieldIdx){
-  allProperties[propIdx].fields.splice(fieldIdx,1);
-  saveJSON(LS_PROPERTIES, allProperties);
-  renderSettingsPropertyList();
-  document.getElementById(`body_${propIdx}`).classList.add('open');
-}
-
-function addField(propIdx){
-  allProperties[propIdx].fields.push({label:'',unit:'袋'});
-  saveJSON(LS_PROPERTIES, allProperties);
-  renderSettingsPropertyList();
-  document.getElementById(`body_${propIdx}`).classList.add('open');
-}
-
-function deleteProperty(idx){
-  if(!confirm(`「${allProperties[idx].name}」を削除しますか？`))return;
-  allProperties.splice(idx,1);
-  saveJSON(LS_PROPERTIES, allProperties);
-  renderSettingsPropertyList();
+function addStaffFromSettings(){
+  const inp=document.getElementById('settingsNewStaff');const name=inp.value.trim();
+  if(!name||staffList.includes(name)){alert(name?'同じ名前が既に登録されています':'名前を入力してください');return;}
+  staffList.push(name);saveJSON(LS_STAFF,staffList);inp.value='';renderSettingsStaff();
 }
 
 // ===== ADD NEW PROPERTY =====
-let newPropSelectedDays=[];
+let newPropDays=[];
 function toggleNewDay(label,day,event){
-  event.preventDefault();
-  label.classList.toggle('checked');
-  if(newPropSelectedDays.includes(day)) newPropSelectedDays=newPropSelectedDays.filter(d=>d!==day);
-  else newPropSelectedDays.push(day);
+  event.preventDefault();label.classList.toggle('checked');
+  if(newPropDays.includes(day))newPropDays=newPropDays.filter(d=>d!==day);else newPropDays.push(day);
 }
 function addFieldRow(){
   const c=document.getElementById('newPropertyFields');
-  const div=document.createElement('div');
-  div.className='field-edit-row';
+  const div=document.createElement('div');div.className='field-edit-row';
   div.innerHTML=`<div class="field-name-wrap">
-      <input type="text" placeholder="項目名をタップ" onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this)" onblur="hideFieldDropdown(this)">
-      <div class="field-dropdown"></div>
-    </div>
+    <input type="text" placeholder="項目名をタップ" onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this)" onblur="hideFieldDropdown(this)">
+    <div class="field-dropdown"></div></div>
     <select><option value="袋">袋</option><option value="kg">kg</option></select>
     <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button>`;
   c.appendChild(div);
 }
 function removeFieldRow(btn){ btn.parentElement.remove(); }
-
 function addNewProperty(){
   const name=document.getElementById('newPropertyName').value.trim();
   if(!name){alert('物件名を入力してください');return;}
   if(allProperties.find(p=>p.name===name)){alert('同じ名前の物件が既に登録されています');return;}
   const rows=document.querySelectorAll('#newPropertyFields .field-edit-row');
   const fields=[];
-  rows.forEach(row=>{
-    const label=row.querySelector('input').value.trim();
-    const unit=row.querySelector('select').value;
-    if(label) fields.push({label,unit});
-  });
+  rows.forEach(row=>{const l=row.querySelector('input').value.trim();const u=row.querySelector('select').value;if(l)fields.push({label:l,unit:u});});
   if(!fields.length){alert('入力項目を1つ以上追加してください');return;}
   const maxOrder=allProperties.reduce((m,p)=>Math.max(m,p.order||0),0);
-  newPropSelectedDays.sort((a,b)=>ORDERED_DAYS.indexOf(a)-ORDERED_DAYS.indexOf(b));
-  allProperties.push({name,order:maxOrder+1,days:[...newPropSelectedDays],fields});
-  saveJSON(LS_PROPERTIES, allProperties);
+  newPropDays.sort((a,b)=>ORDERED_DAYS.indexOf(a)-ORDERED_DAYS.indexOf(b));
+  allProperties.push({name,order:maxOrder+1,days:[...newPropDays],fields});
+  saveJSON(LS_PROPERTIES,allProperties);
   document.getElementById('newPropertyName').value='';
   document.querySelectorAll('#newPropertyDays .day-check-label').forEach(l=>l.classList.remove('checked'));
-  newPropSelectedDays=[];
+  newPropDays=[];
   document.getElementById('newPropertyFields').innerHTML=`<div class="field-edit-row">
-    <div class="field-name-wrap">
-      <input type="text" placeholder="項目名をタップ" onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this)" onblur="hideFieldDropdown(this)">
-      <div class="field-dropdown"></div>
-    </div>
+    <div class="field-name-wrap"><input type="text" placeholder="項目名をタップ" onfocus="showFieldDropdown(this)" oninput="filterFieldDropdown(this)" onblur="hideFieldDropdown(this)"><div class="field-dropdown"></div></div>
     <select><option value="袋">袋</option><option value="kg">kg</option></select>
     <button class="btn btn-danger btn-sm" onclick="removeFieldRow(this)">✕</button></div>`;
   alert(`「${name}」を登録しました`);
-  switchTab('properties');
-  renderSettingsPropertyList();
 }
 </script>
 </body>
