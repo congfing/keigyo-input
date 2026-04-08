@@ -9,14 +9,19 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Hiragino Sans', 'Meiryo', sans-serif; background: #f0f4f8; color: #333; min-height: 100vh; }
 
-  .header { background: #1a6eb5; color: white; padding: 12px 16px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
-  .header-row { display: flex; justify-content: space-between; align-items: center; }
-  .header h1 { font-size: 17px; font-weight: bold; }
-  .settings-btn { background: rgba(255,255,255,0.2); border: none; color: white; padding: 6px 10px; border-radius: 8px; font-size: 18px; cursor: pointer; }
-  .progress-bar { display: flex; gap: 4px; margin-top: 8px; }
-  .progress-step { flex: 1; height: 4px; background: rgba(255,255,255,0.3); border-radius: 2px; transition: background 0.3s; }
-  .progress-step.active { background: #fff; }
-  .progress-step.done { background: #7dd3fc; }
+  .header { background: #1a6eb5; color: white; padding: 8px 14px 0; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 6px rgba(0,0,0,0.2); }
+  .header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+  .header-left { display: flex; align-items: center; gap: 10px; }
+  .back-date { font-size: 13px; color: rgba(255,255,255,0.9); font-weight: 500; white-space: nowrap; }
+  .header h1 { font-size: 16px; font-weight: bold; }
+  /* Nav tabs */
+  .nav-tabs { display: flex; gap: 2px; overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 0; }
+  .nav-tab { flex-shrink: 0; padding: 7px 10px; font-size: 12px; font-weight: bold; color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.1); border: none; border-radius: 8px 8px 0 0; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap; }
+  .nav-tab.active { background: white; color: #1a6eb5; }
+  .nav-tab.disabled { opacity: 0.4; cursor: default; }
+  .nav-tab:not(.disabled):not(.active):active { background: rgba(255,255,255,0.25); }
 
   .screen { display: none; padding: 16px; max-width: 500px; margin: 0 auto; }
   .screen.active { display: block; }
@@ -82,8 +87,8 @@
 
   .add-row { display: flex; gap: 8px; margin-top: 8px; }
   .add-row input { flex: 1; }
-  .back-btn { background: none; border: none; color: white; font-size: 14px; cursor: pointer;
-    padding: 4px 0; display: flex; align-items: center; gap: 4px; }
+  .back-btn { background: rgba(255,255,255,0.2); border: none; color: white; font-size: 13px; font-weight: bold; cursor: pointer;
+    padding: 5px 10px; border-radius: 8px; display: flex; align-items: center; gap: 4px; white-space: nowrap; }
   .empty-state { text-align: center; padding: 32px 16px; color: #aaa; }
   .empty-state .icon { font-size: 48px; margin-bottom: 8px; }
 
@@ -140,19 +145,18 @@
 <body>
 
 <div class="header">
-  <div class="header-row">
-    <div>
+  <div class="header-top">
+    <div class="header-left">
       <button class="back-btn" id="backBtn" onclick="goBack()" style="display:none">← 戻る</button>
-      <h1 id="headerTitle">計量データ入力</h1>
+      <span class="back-date" id="headerDateLabel"></span>
     </div>
-    <button class="settings-btn" onclick="showSettings()">⚙️</button>
+    <h1 id="headerTitle">計量データ入力</h1>
   </div>
-  <div class="progress-bar" id="progressBar">
-    <div class="progress-step" id="step1"></div>
-    <div class="progress-step" id="step2"></div>
-    <div class="progress-step" id="step3"></div>
-    <div class="progress-step" id="step4"></div>
-    <div class="progress-step" id="step5"></div>
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" id="navDate" onclick="navTo(1)">📅 日付選択</button>
+    <button class="nav-tab disabled" id="navStaff" onclick="navTo(2)">👤 担当者</button>
+    <button class="nav-tab disabled" id="navProps" onclick="navTo(3)">🏢 物件リスト</button>
+    <button class="nav-tab" id="navSettings" onclick="showSettings()">⚙️ 設定</button>
   </div>
 </div>
 
@@ -332,14 +336,32 @@ window.onload = function(){
 // ===== NAVIGATION =====
 function updateProgress(n){
   state.currentScreen=n;
-  document.getElementById('progressBar').style.display=n===0?'none':'flex';
-  for(let i=1;i<=5;i++){
-    const el=document.getElementById(`step${i}`);
-    if(el) el.className='progress-step'+(i<n?' done':i===n?' active':'');
-  }
   document.getElementById('backBtn').style.display=(n>1||n===0)?'flex':'none';
   const titles={0:'設定',1:'計量データ入力',2:'担当者選択',3:'物件リスト',4:'データ入力',5:'確認・保存'};
   document.getElementById('headerTitle').textContent=titles[n]||'';
+  // Update date label in header
+  const dl=document.getElementById('headerDateLabel');
+  if(state.date && state.dayName) dl.textContent=`${state.date}（${state.dayName}）`;
+  else dl.textContent='';
+  // Update nav tabs
+  const tabMap={1:'navDate',2:'navStaff',3:'navProps',5:'navProps'};
+  ['navDate','navStaff','navProps','navSettings'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){ el.classList.remove('active'); }
+  });
+  if(n===0){ document.getElementById('navSettings').classList.add('active'); }
+  else if(tabMap[n]){ document.getElementById(tabMap[n]).classList.add('active'); }
+  // Enable/disable tabs based on state
+  document.getElementById('navStaff').className='nav-tab'+(state.date?'':' disabled')+(n===2?' active':'');
+  document.getElementById('navProps').className='nav-tab'+(state.selectedStaff?'':' disabled')+(n===3||n===5?' active':'');
+}
+
+function navTo(n){
+  if(n===2 && !state.date){ return; }
+  if(n===3 && !state.selectedStaff){ return; }
+  if(n===1) showScreen(1);
+  else if(n===2){ renderStaffList(); showScreen(2); }
+  else if(n===3){ renderPropertyList(); showScreen(3); }
 }
 
 function goBack(){
