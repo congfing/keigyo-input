@@ -273,6 +273,7 @@ const FIELD_SUGGESTIONS = ['可燃','不燃','生ごみ','段ボール','アラ'
 const LS_PROPERTIES = 'keigyo_properties';
 const LS_STAFF = 'keigyo_staff';
 const LS_ORDER_PREFIX = 'keigyo_order_'; // + staffName + '_' + dayName
+const LS_LASTDATA_PREFIX = 'keigyo_last_'; // + propertyName
 
 // ===== DEFAULT DATA =====
 const DEFAULT_PROPERTIES = [
@@ -306,6 +307,12 @@ function getSavedOrder(staffName, dayName){
 }
 function setSavedOrder(staffName, dayName, orderArr){
   saveJSON(LS_ORDER_PREFIX+staffName+'_'+dayName, orderArr);
+}
+function getLastData(propName){
+  return loadJSON(LS_LASTDATA_PREFIX+propName, null);
+}
+function setLastData(propName, data, staffName, date){
+  saveJSON(LS_LASTDATA_PREFIX+propName, {data, staffName, date});
 }
 
 let state = {
@@ -482,10 +489,16 @@ function goToScreen4(idx){
   document.getElementById('propertyTitle').textContent=prop.name;
   const existing=state.entryData[prop.name]||{};
   const c=document.getElementById('inputFields'); c.innerHTML='';
+  const lastSaved = getLastData(prop.name);
   prop.fields.forEach(field=>{
     const div=document.createElement('div');
     div.className='field-group card';
+    let hintHtml = '';
+    if(lastSaved && lastSaved.data && lastSaved.data[field.label] !== undefined && lastSaved.data[field.label] !== ''){
+      hintHtml = `<div style="font-size:12px;color:#aaa;margin-bottom:4px">前回（${lastSaved.date}・${lastSaved.staffName}）：<span style="font-weight:bold;color:#94a3b8">${lastSaved.data[field.label]} ${field.unit}</span></div>`;
+    }
     div.innerHTML=`<div class="field-label">${field.label}<span class="field-unit">（${field.unit}）</span></div>
+      ${hintHtml}
       <input type="number" class="num-input" inputmode="decimal" min="0" step="0.1"
         id="field_${field.label}" placeholder="0" value="${existing[field.label]!==undefined?existing[field.label]:''}">`;
     c.appendChild(div);
@@ -503,6 +516,7 @@ function savePropertyData(){
   });
   if(!hasVal&&!confirm('値が入力されていません。空のまま保存しますか？'))return;
   state.entryData[prop.name]=data;
+  setLastData(prop.name, data, state.selectedStaff, state.date);
   state.entryOrder=state.entryOrder.filter(n=>n!==prop.name);
   state.entryOrder.push(prop.name);
   renderPropertyList(); showScreen(3);
