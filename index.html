@@ -58,11 +58,18 @@
   .prop-card { background: white; border-radius: 12px; margin-bottom: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); overflow: hidden; border: 2px solid transparent; transition: border-color 0.2s; }
   .prop-card.done { border-color: #22c55e; }
   .prop-card-header { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; }
-  .prop-order-input { width: 40px !important; max-width: 40px !important; min-width: 40px !important;
-    padding: 5px 3px; text-align: center; font-size: 15px; font-weight: bold;
-    border: 2px solid #e2e8f0; border-radius: 8px; background: #f8fafc; color: #1a6eb5;
-    flex-shrink: 0; outline: none; }
-  .prop-order-input:focus { border-color: #1a6eb5; }
+  .prop-order-num { width: 36px; min-width: 36px; height: 36px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: bold;
+    border-radius: 8px; background: #eff6ff; color: #1a6eb5;
+    flex-shrink: 0; }
+  .prop-card.done .prop-order-num { background: #dcfce7; color: #16a34a; }
+  .drag-handle { width: 28px; min-width: 28px; display: flex; align-items: center;
+    justify-content: center; font-size: 18px; color: #bbb; flex-shrink: 0;
+    padding: 8px 2px; cursor: grab; user-select: none; touch-action: none; }
+  .drag-handle:active { color: #1a6eb5; }
+  .prop-card.dragging { opacity: 0.35; }
+  .prop-card.drag-over { outline: 2px dashed #1a6eb5; outline-offset: -2px; }
   .prop-info { flex: 1; min-width: 0; overflow: hidden; }
   .prop-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .prop-days { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 4px; }
@@ -288,7 +295,16 @@
 <script>
 const DAYS_JP   = ['日','月','火','水','木','金','土'];
 const ORDERED_DAYS = ['月','火','水','木','金','土','日'];
-const FIELD_SUGGESTIONS = ['可燃','不燃','生ごみ','段ボール','アラ','ペット','白','青','黒','段紙','紙','缶','びん','その他','廃プラ'];
+const FIELD_SUGGESTIONS = [
+  '可燃','可燃ごみ','可燃物','不燃','不燃ごみ','不燃物',
+  '生ごみ','生ゴミ','段ボール','ダンボール','アラ','ペット','ペットボトル',
+  '白','青','黒','段紙','紙','紙類','古紙','新聞雑誌','新聞紙','雑誌',
+  '缶','カン','アルミ缶','金属缶','びん','ビン','ガラス','われもの','割れ物',
+  'その他','廃プラ','硬質プラスチック','発泡スチロール','ハッポウ',
+  '牛乳パック','飲料用紙パック','紙屑','木くず','木屑',
+  'シュレッターごみ','食品リサイクル','衣類','蛍光灯','ハンガー',
+  'フィルター紙','資源物','袋数'
+];
 const LS_PROPERTIES    = 'keiryo_properties';
 const LS_STAFF         = 'keiryo_staff';
 const LS_ORDER_PREFIX  = 'keiryo_order_';
@@ -296,21 +312,52 @@ const LS_LASTDATA_PREFIX = 'keiryo_last_';
 const LS_HISTORY_PREFIX  = 'keiryo_hist_'; // + date_staffName
 
 const DEFAULT_PROPERTIES = [
-  { name:'セブン四十九',  order:1,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-  { name:'セブン東町',    order:2,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-  { name:'セブン本町',    order:3,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-  { name:'セブン忍者',    order:4,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-  { name:'セブン平野東町',order:5,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-  { name:'セブン東条',    order:6,  days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
-  { name:'魚民',          order:7,  days:['月'], fields:[{label:'生ごみ',unit:'kg'},{label:'紙',unit:'kg'}] },
-  { name:'旧庁舎',        order:8,  days:['月'], fields:[{label:'白',unit:'袋'},{label:'青',unit:'袋'},{label:'黒',unit:'袋'},{label:'段紙',unit:'kg'},{label:'ペット',unit:'袋'}] },
-  { name:'すき家',        order:9,  days:['月'], fields:[{label:'可燃',unit:'袋'}] },
-  { name:'古本市場',      order:10, days:['月'], fields:[{label:'可燃',unit:'袋'}] },
-  { name:'ＨＭ白鵬',     order:11, days:['月'], fields:[{label:'生ごみ',unit:'kg'}] },
-  { name:'アオキ',        order:12, days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
-  { name:'あみやき亭',    order:13, days:['月'], fields:[{label:'可燃',unit:'kg'},{label:'生ごみ',unit:'kg'},{label:'その他',unit:'kg'}] },
-  { name:'いがっこ給食',  order:14, days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
-  { name:'マックス佐那具',order:15, days:['月'], fields:[{label:'可燃',unit:'袋'},{label:'生ごみ',unit:'袋'},{label:'アラ',unit:'kg'}] },
+  // ── セブンイレブン各店 ──
+  { name:'セブン四十九',    order:1,  days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン東町',      order:2,  days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン本町',      order:3,  days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン忍者',      order:4,  days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン平野東町',  order:5,  days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  { name:'セブン東条',      order:6,  days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
+  // ── 飲食店 ──
+  { name:'魚民',            order:7,  days:[], fields:[{label:'生ゴミ',unit:'kg'},{label:'紙類',unit:'kg'},{label:'他可燃ゴミ',unit:'kg'},{label:'不燃',unit:'kg'},{label:'カン',unit:'kg'},{label:'ビン',unit:'kg'},{label:'ダンボール',unit:'kg'},{label:'割れ物',unit:'kg'},{label:'発泡スチロール',unit:'kg'},{label:'食品リサイクル',unit:'kg'}] },
+  { name:'すき家',          order:8,  days:[], fields:[{label:'可燃ごみ',unit:'袋'}] },
+  { name:'あみやき亭',      order:9,  days:[], fields:[{label:'可燃',unit:'kg'},{label:'生ごみ',unit:'kg'},{label:'その他',unit:'kg'}] },
+  { name:'びっくりドンキー',order:10, days:[], fields:[{label:'生ごみ',unit:'kg'},{label:'カン',unit:'kg'},{label:'ビン',unit:'kg'},{label:'われもの',unit:'kg'},{label:'蛍光灯',unit:'kg'},{label:'ハンガー',unit:'kg'},{label:'段ボール',unit:'kg'},{label:'新聞雑誌',unit:'kg'},{label:'アルミ缶',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'牛乳パック',unit:'kg'},{label:'発泡スチロール',unit:'kg'}] },
+  { name:'KFC',             order:11, days:[], fields:[{label:'生ごみ',unit:'kg'},{label:'カン',unit:'kg'},{label:'ビン',unit:'kg'},{label:'われもの',unit:'kg'},{label:'蛍光灯',unit:'kg'},{label:'ハンガー',unit:'kg'},{label:'段ボール',unit:'kg'},{label:'新聞雑誌',unit:'kg'},{label:'アルミ缶',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'牛乳パック',unit:'kg'},{label:'発泡スチロール',unit:'kg'}] },
+  // ── スーパー・量販店 ──
+  { name:'イオンタウン',    order:12, days:[], fields:[{label:'生ごみ',unit:'kg'},{label:'カン',unit:'kg'},{label:'ビン',unit:'kg'},{label:'われもの',unit:'kg'},{label:'蛍光灯',unit:'kg'},{label:'ハンガー',unit:'kg'},{label:'段ボール',unit:'kg'},{label:'新聞雑誌',unit:'kg'},{label:'アルミ缶',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'牛乳パック',unit:'kg'},{label:'発泡スチロール',unit:'kg'}] },
+  { name:'マックスバリュ上野',order:13,days:[], fields:[{label:'生ごみ',unit:'kg'},{label:'カン',unit:'kg'},{label:'ビン',unit:'kg'},{label:'われもの',unit:'kg'},{label:'アラ',unit:'kg'},{label:'段ボール',unit:'kg'},{label:'新聞雑誌',unit:'kg'},{label:'アルミ缶',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'牛乳パック',unit:'kg'},{label:'発泡スチロール',unit:'kg'}] },
+  { name:'マックス佐那具',  order:14, days:[], fields:[{label:'生ごみ',unit:'kg'},{label:'カン',unit:'kg'},{label:'ビン',unit:'kg'},{label:'われもの',unit:'kg'},{label:'アラ',unit:'kg'},{label:'段ボール',unit:'kg'},{label:'新聞雑誌',unit:'kg'},{label:'アルミ缶',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'牛乳パック',unit:'kg'},{label:'発泡スチロール',unit:'kg'}] },
+  { name:'ナフコ',          order:15, days:[], fields:[{label:'可燃物',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'発泡スチロール',unit:'kg'},{label:'木くず',unit:'kg'},{label:'その他',unit:'kg'}] },
+  { name:'西松屋',          order:16, days:[], fields:[{label:'可燃物',unit:'kg'},{label:'不燃物',unit:'kg'},{label:'ダンボール',unit:'kg'},{label:'ビン',unit:'kg'},{label:'カン',unit:'kg'},{label:'ペットボトル',unit:'kg'}] },
+  { name:'古本市場',        order:17, days:[], fields:[{label:'可燃',unit:'袋'}] },
+  // ── ほっとアっと ──
+  { name:'ＨＭ白鵬',       order:18, days:[], fields:[{label:'紙屑',unit:'kg'},{label:'生ごみ',unit:'kg'},{label:'木屑',unit:'kg'},{label:'金属缶',unit:'kg'},{label:'ビン',unit:'kg'},{label:'ガラス',unit:'kg'},{label:'廃プラ',unit:'kg'},{label:'ハッポウ',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'段ボール',unit:'kg'}] },
+  { name:'ＨＭ桑町',       order:19, days:[], fields:[{label:'紙屑',unit:'kg'},{label:'生ごみ',unit:'kg'},{label:'木屑',unit:'kg'},{label:'金属缶',unit:'kg'},{label:'ビン',unit:'kg'},{label:'ガラス',unit:'kg'},{label:'廃プラ',unit:'kg'},{label:'ハッポウ',unit:'kg'},{label:'ペットボトル',unit:'kg'},{label:'段ボール',unit:'kg'}] },
+  // ── アパレル ──
+  { name:'アオキ',          order:20, days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
+  // ── 庁舎・公共 ──
+  { name:'旧庁舎(SAKAKURA)',order:21, days:[], fields:[{label:'白',unit:'袋'},{label:'青',unit:'袋'},{label:'黒',unit:'袋'},{label:'段紙',unit:'kg'},{label:'ペット',unit:'袋'}] },
+  { name:'三重県伊賀庁舎',  order:22, days:[], fields:[{label:'古紙',unit:'kg'},{label:'ダンボール',unit:'kg'},{label:'その他',unit:'kg'}] },
+  { name:'上野法務合同庁舎',order:23, days:[], fields:[{label:'可燃物',unit:'kg'},{label:'古紙',unit:'kg'},{label:'ダンボール',unit:'kg'},{label:'不燃物',unit:'kg'}] },
+  { name:'津地方裁判所',    order:24, days:[], fields:[{label:'可燃ごみ',unit:'kg'},{label:'シュレッターごみ',unit:'kg'},{label:'新聞紙',unit:'kg'},{label:'雑誌',unit:'kg'},{label:'衣類',unit:'kg'},{label:'ダンボール',unit:'kg'},{label:'飲料用紙パック',unit:'kg'},{label:'ペットボトル',unit:'kg'}] },
+  { name:'創価学会',        order:25, days:[], fields:[{label:'古紙',unit:'kg'},{label:'可燃ごみ',unit:'kg'},{label:'その他',unit:'kg'}] },
+  // ── 給食・飲食以外サービス ──
+  { name:'いがっこ給食',    order:26, days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'}] },
+  { name:'チョーヤ梅酒',    order:27, days:[], fields:[{label:'可燃物収集',unit:'袋'},{label:'フィルター紙収集',unit:'袋'}] },
+  // ── 工業・業務 ──
+  { name:'コカ・コーラボトラーズ',order:28,days:[], fields:[{label:'袋数',unit:'袋'}] },
+  { name:'LA・MU',          order:29, days:[], fields:[{label:'可燃ごみ',unit:'kg'},{label:'不燃ごみ',unit:'kg'}] },
+  { name:'飯田金属',        order:30, days:[], fields:[{label:'可燃',unit:'kg'}] },
+  { name:'厚板プレス工業',  order:31, days:[], fields:[{label:'可燃ごみ',unit:'kg'},{label:'不燃ごみ',unit:'kg'},{label:'その他',unit:'kg'}] },
+  { name:'大本紙料/ドラッグセイムス',order:32,days:[], fields:[{label:'段ボール',unit:'kg'}] },
+  { name:'株式会社三輝/農業屋',order:33,days:[], fields:[{label:'可燃ごみ',unit:'kg'},{label:'不燃ごみ',unit:'kg'},{label:'その他',unit:'kg'},{label:'段ボール',unit:'kg'}] },
+  // ── その他 ──
+  { name:'伊賀の街',        order:34, days:[], fields:[{label:'可燃ごみ袋数',unit:'袋'},{label:'可燃ごみkg',unit:'kg'}] },
+  { name:'伊賀神戸駅',      order:35, days:[], fields:[{label:'可燃ごみ',unit:'袋'},{label:'不燃ごみカン',unit:'袋'},{label:'不燃ごみビン',unit:'袋'},{label:'その他',unit:'袋'}] },
+  { name:'やさいの戸島屋',  order:36, days:[], fields:[{label:'可燃ごみ',unit:'袋'}] },
+  { name:'セカンドストリート',order:37,days:[], fields:[{label:'可燃',unit:'袋'},{label:'不燃',unit:'袋'},{label:'段ボール',unit:'kg'}] },
 ];
 const DEFAULT_STAFF = ['担当者A','担当者B'];
 
@@ -352,6 +399,7 @@ window.onload = function(){
   const d=String(t.getDate()).padStart(2,'0');
   document.getElementById('dateInput').value=`${y}-${m}-${d}`;
   updateNav(1);
+  setupDragHandlers();
 };
 
 // ===== NAVIGATION =====
@@ -414,7 +462,7 @@ function renderStaffList(){
     const badge=saved?`<span class="order-saved-badge">順番保存済み</span>`:'';
     const div=document.createElement('div');
     div.className='staff-item'+(state.selectedStaff===name?' selected':'');
-    div.innerHTML=`<div><span style="font-size:16px;font-weight:500">${name}</span>${badge}</div>
+    div.innerHTML<`<div><span style="font-size:16px;font-weight:500">${name}</span>${badge}</div>
       <div style="display:flex;align-items:center;gap:8px">
         <span class="staff-check">✓</span>
         <button class="btn btn-danger btn-sm" onclick="removeStaff('${name}',event)">削除</button>
@@ -480,6 +528,7 @@ function renderPropertyList(){
     banner.style.display='none';
   }
 
+  _displayOrder = displayList.map(p=>p.name);
   displayList.forEach((prop,di)=>{
     const done=!!state.entryData[prop.name];
     const idx=allProperties.indexOf(prop);
@@ -502,7 +551,7 @@ function renderPropertyList(){
     const fieldRows=prop.fields.map((f,fi)=>`
       <div class="field-edit-row">
         <div class="field-name-wrap">
-          <input type="text" value="${f.label}" placeholder="項目名" onfocus="showFieldDropdown(this)"
+          <input type="text" value="${f.label}" placeholder="項目名" data-prop-idx="${idx}" onfocus="showFieldDropdown(this)"
             oninput="filterFieldDropdown(this);updateFL(${idx},${fi},this.value)"
             onchange="updateFL(${idx},${fi},this.value)" onblur="hideFieldDropdown(this)">
           <div class="field-dropdown"></div>
@@ -524,8 +573,8 @@ function renderPropertyList(){
 
     div.innerHTML=`
       <div class="prop-card-header" onclick="togglePropCard(${idx})">
-        <input class="prop-order-input" type="number" min="1" value="${prop.order||''}" placeholder="#"
-          onclick="event.stopPropagation()" onchange="updatePropOrder(${idx},this.value)">
+        <div class="prop-order-num">${di+1}</div>
+        <div class="drag-handle" data-di="${di}" onclick="event.stopPropagation()">☰</div>
         <div class="prop-info">
           <div class="prop-name">${prop.name}</div>
           <div class="prop-days">${dayDots}</div>
@@ -560,9 +609,68 @@ function togglePropCard(idx){
   arrow.textContent=open?'▼':'▲';
 }
 
-function updatePropOrder(idx,val){
-  allProperties[idx].order=val?parseInt(val):999;
-  saveJSON(LS_PROPERTIES,allProperties);
+// ===== DRAG REORDER =====
+let _displayOrder = [];
+let _drag = null;
+
+function reorderProps(fromDI, toDI){
+  if(fromDI === toDI) return;
+  const names = [..._displayOrder];
+  const [moved] = names.splice(fromDI, 1);
+  names.splice(toDI, 0, moved);
+  names.forEach((n,i)=>{ const p=allProperties.find(p=>p.name===n); if(p) p.order=i+1; });
+  saveJSON(LS_PROPERTIES, allProperties);
+  const saved = getSavedOrder(state.selectedStaff, state.dayName);
+  if(saved && saved.length) setSavedOrder(state.selectedStaff, state.dayName, names);
+  renderPropertyList();
+}
+
+function setupDragHandlers(){
+  const list = document.getElementById('propertyList');
+
+  list.addEventListener('touchstart', e => {
+    const handle = e.target.closest('.drag-handle');
+    if(!handle) return;
+    e.preventDefault(); e.stopPropagation();
+    const di = parseInt(handle.dataset.di);
+    const card = handle.closest('.prop-card');
+    const rect = card.getBoundingClientRect();
+    const t = e.touches[0];
+    const ghost = card.cloneNode(true);
+    ghost.id = '_dragGhost';
+    ghost.style.cssText = `position:fixed;left:${rect.left}px;top:${rect.top}px;width:${rect.width}px;z-index:9999;pointer-events:none;box-shadow:0 8px 24px rgba(0,0,0,0.25);transform:scale(1.02);border-radius:12px;`;
+    document.body.appendChild(ghost);
+    card.classList.add('dragging');
+    _drag = { di, ghost, card, offsetY: t.clientY - rect.top, ghostH: rect.height, targetDI: di };
+  }, { passive: false });
+
+  document.addEventListener('touchmove', e => {
+    if(!_drag) return;
+    e.preventDefault();
+    const t = e.touches[0];
+    const newTop = t.clientY - _drag.offsetY;
+    _drag.ghost.style.top = newTop + 'px';
+    const ghostMid = newTop + _drag.ghostH / 2;
+    const cards = [...document.querySelectorAll('#propertyList .prop-card')];
+    let best = _drag.di, bestDist = Infinity;
+    cards.forEach((c,i)=>{
+      const r = c.getBoundingClientRect();
+      const dist = Math.abs(ghostMid - (r.top + r.height/2));
+      if(dist < bestDist){ bestDist=dist; best=i; }
+    });
+    _drag.targetDI = best;
+    cards.forEach((c,i)=> c.classList.toggle('drag-over', i===best && i!==_drag.di));
+  }, { passive: false });
+
+  document.addEventListener('touchend', () => {
+    if(!_drag) return;
+    _drag.ghost.remove();
+    _drag.card.classList.remove('dragging');
+    document.querySelectorAll('#propertyList .prop-card').forEach(c=>c.classList.remove('drag-over'));
+    const from = _drag.di, to = _drag.targetDI;
+    _drag = null;
+    if(from !== to) reorderProps(from, to);
+  });
 }
 
 function toggleDayInline(idx,day,label,event){
@@ -703,10 +811,25 @@ function exportXlsx(){
 }
 
 // ===== FIELD DROPDOWN =====
-function showFieldDropdown(input){ renderDropdown(input.parentElement.querySelector('.field-dropdown'),input.value); }
-function filterFieldDropdown(input){ renderDropdown(input.parentElement.querySelector('.field-dropdown'),input.value); }
-function renderDropdown(dd,q){
-  const f=FIELD_SUGGESTIONS.filter(s=>s.includes(q)||q==='');
+function getPropSuggestions(input){
+  const idx=parseInt(input.dataset.propIdx);
+  if(!isNaN(idx)&&allProperties[idx]){
+    const prop=allProperties[idx];
+    // Use DEFAULT_PROPERTIES as the authoritative per-property list (from Excel)
+    const def=DEFAULT_PROPERTIES.find(d=>d.name===prop.name);
+    const defLabels=def?def.fields.map(f=>f.label).filter(Boolean):[];
+    // Also include any user-added labels not in defaults
+    const curLabels=prop.fields.map(f=>f.label).filter(Boolean);
+    const merged=[...new Set([...defLabels,...curLabels])];
+    if(merged.length>0)return merged;
+  }
+  return FIELD_SUGGESTIONS;
+}
+function showFieldDropdown(input){ renderDropdown(input.parentElement.querySelector('.field-dropdown'),input.value,getPropSuggestions(input)); }
+function filterFieldDropdown(input){ renderDropdown(input.parentElement.querySelector('.field-dropdown'),input.value,getPropSuggestions(input)); }
+function renderDropdown(dd,q,suggestions){
+  const list=suggestions||FIELD_SUGGESTIONS;
+  const f=list.filter(s=>s.includes(q)||q==='');
   dd.innerHTML=f.map(s=>`<div class="field-dropdown-item" onmousedown="selectSug(event,'${s}')">${s}</div>`).join('');
   dd.classList.toggle('open',f.length>0);
 }
@@ -842,7 +965,7 @@ function renderSettingsStaff(){
   });
 }
 function removeStaffSettings(name){
-  if(!confirm(`「${name}」を削除しますか？`))return;
+  if(!confirm(`「${name}」を削除しますお？`))return;
   staffList=staffList.filter(s=>s!==name);saveJSON(LS_STAFF,staffList);
   if(state.selectedStaff===name)state.selectedStaff='';
   renderSettingsStaff();
