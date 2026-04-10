@@ -1,0 +1,302 @@
+{
+  "version": "1.0",
+  "updated": "2026-04-11",
+  "companies": [
+    {
+      "id": "sukiya",
+      "name": "すき家",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "可燃物", "unit": "kg"},
+        {"label": "ビン缶PET", "unit": "袋"},
+        {"label": "ビン缶PET", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "furuhon",
+      "name": "古本市場",
+      "fields": [
+        {"label": "可燃", "unit": "袋"}
+      ]
+    },
+    {
+      "id": "hm_hakuho",
+      "name": "ほっともっと白鳳",
+      "fields": [
+        {"label": "紙屑", "unit": "袋"},
+        {"label": "生ごみ", "unit": "kg"},
+        {"label": "廃プラ", "unit": "袋"},
+        {"label": "ペットボトル", "unit": "袋"},
+        {"label": "段ボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "hm_kuwa",
+      "name": "ほっともっと桑町",
+      "fields": [
+        {"label": "紙屑", "unit": "袋"},
+        {"label": "生ごみ", "unit": "kg"},
+        {"label": "廃プラ", "unit": "袋"},
+        {"label": "ペットボトル", "unit": "袋"},
+        {"label": "段ボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seven_higashimachi",
+      "name": "セブン平野東町",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "不燃物", "unit": "袋"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seven_tojo",
+      "name": "セブン東条",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "不燃物", "unit": "袋"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seven_kitadani",
+      "name": "セブン平野北谷",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "不燃物", "unit": "袋"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seven_49",
+      "name": "セブン四十九町北",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "不燃物", "unit": "袋"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seven_honmachi",
+      "name": "セブン緑ヶ丘本町",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "不燃物", "unit": "袋"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seven_ninjashi",
+      "name": "セブン忍者市駅南",
+      "fields": [
+        {"label": "可燃物", "unit": "袋"},
+        {"label": "不燃物", "unit": "袋"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "second_street",
+      "name": "セカンドストリート",
+      "fields": [
+        {"label": "可燃物", "unit": "kg"},
+        {"label": "不燃物", "unit": "kg"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "max_sanagu",
+      "name": "マックス佐那具",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "kg"},
+        {"label": "生ごみ", "unit": "kg"},
+        {"label": "アラ", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "max_ueno",
+      "name": "マックス上野",
+      "fields": [
+        {"label": "可燃", "unit": "kg"},
+        {"label": "生ごみ", "unit": "kg"},
+        {"label": "アラ", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "nokogiya",
+      "name": "農業屋",
+      "fields": [
+        {"label": "可燃", "unit": "袋"},
+        {"label": "その他", "unit": "袋"},
+        {"label": "段ボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "lamu",
+      "name": "LAMU",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "kg"},
+        {"label": "不燃ごみ", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "igakko",
+      "name": "いがっこ給食",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "kg"},
+        {"label": "不燃・金属", "unit": "kg"},
+        {"label": "ビン・割れ物", "unit": "kg"},
+        {"label": "硬質プラ", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "ion",
+      "name": "イオン",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "kg"},
+        {"label": "生ごみ", "unit": "kg"},
+        {"label": "カン", "unit": "kg"},
+        {"label": "ビン", "unit": "kg"},
+        {"label": "段ボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "donkey",
+      "name": "ドンキー",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "kfc",
+      "name": "KFC",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "coca",
+      "name": "コカコーラ",
+      "fields": [
+        {"label": "収集", "unit": "袋"}
+      ]
+    },
+    {
+      "id": "choya",
+      "name": "チョーヤ",
+      "fields": [
+        {"label": "可燃", "unit": "㎥"},
+        {"label": "可燃", "unit": "kg"},
+        {"label": "第2収集", "unit": "㎥"},
+        {"label": "第2収集", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "tojimaya",
+      "name": "戸島屋",
+      "fields": [
+        {"label": "可燃ごみ", "unit": "袋"}
+      ]
+    },
+    {
+      "id": "igachosha",
+      "name": "伊賀庁舎",
+      "fields": [
+        {"label": "古紙", "unit": "kg"},
+        {"label": "段ボール", "unit": "kg"},
+        {"label": "その他", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "homunkyoku",
+      "name": "法務局",
+      "fields": [
+        {"label": "可燃", "unit": "kg"},
+        {"label": "資源ごみ", "unit": "kg"},
+        {"label": "不燃", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "iga_machi",
+      "name": "伊賀の街",
+      "fields": [
+        {"label": "可燃", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "lifetechno",
+      "name": "ライフテクノ",
+      "fields": [
+        {"label": "可燃", "unit": "kg"},
+        {"label": "不燃", "unit": "袋"}
+      ]
+    },
+    {
+      "id": "kambeki",
+      "name": "神戸駅",
+      "fields": [
+        {"label": "可燃", "unit": "袋"},
+        {"label": "カン", "unit": "袋"},
+        {"label": "ビン", "unit": "袋"},
+        {"label": "その他", "unit": "袋"}
+      ]
+    },
+    {
+      "id": "atsuta",
+      "name": "厚板",
+      "fields": [
+        {"label": "可燃", "unit": "kg"},
+        {"label": "不燃", "unit": "kg"},
+        {"label": "その他", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "seims",
+      "name": "セイムス",
+      "fields": [
+        {"label": "段ボール", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "kyuueno",
+      "name": "旧上野庁舎",
+      "fields": [
+        {"label": "ホテル可燃", "unit": "kg"},
+        {"label": "ホテル不燃", "unit": "kg"},
+        {"label": "図書館可燃", "unit": "kg"},
+        {"label": "図書館不燃", "unit": "kg"},
+        {"label": "カフェ可燃", "unit": "kg"},
+        {"label": "カフェ不燃", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "saibansho",
+      "name": "裁判所",
+      "fields": [
+        {"label": "シュレッダー", "unit": "kg"},
+        {"label": "新聞・段ボール", "unit": "kg"},
+        {"label": "可燃", "unit": "kg"},
+        {"label": "不燃", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "iida",
+      "name": "飯田金属",
+      "fields": [
+        {"label": "収集", "unit": "kg"}
+      ]
+    },
+    {
+      "id": "uomintami",
+      "name": "魚民",
+      "fields": [
+        {"label": "生ごみ", "unit": "kg"},
+        {"label": "紙", "unit": "kg"},
+        {"label": "不燃ビニ", "unit": "kg"},
+        {"label": "カン", "unit": "kg"},
+        {"label": "ビン", "unit": "kg"},
+        {"label": "ダンボール", "unit": "kg"}
+      ]
+    }
+  ]
+}
