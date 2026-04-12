@@ -250,13 +250,13 @@
 <h1>📦 計量入力</h1>
 
 <!-- メモ確認ボタン -->
-<button class="btn-memo" onclick="showMemo()">📋 本日のメモを確認</button>
+<button class="btn-memo" onclick="showMemo()">📋 メモを確認</button>
 
 <!-- メモモーダル -->
 <div class="memo-overlay" id="memo-overlay" onclick="closeMemoOnBg(event)">
   <div class="memo-modal">
     <div class="memo-modal-header">
-      <span class="memo-modal-title">📋 本日の入力メモ</span>
+      <span class="memo-modal-title">📋 メモを確認</span>
       <button class="btn-close-memo" onclick="closeMemo()">✕</button>
     </div>
     <div style="margin-bottom:12px">
@@ -327,7 +327,6 @@ const COMPANIES_JSON_URL = 'companies.json';
 
 let companies = [];
 let entries = [];
-let savedMemo = JSON.parse(localStorage.getItem('savedMemo_' + getTodayStr()) || '[]');
 
 // 初期化
 function init() {
@@ -511,9 +510,17 @@ async function saveToSheet() {
   btn.disabled = false;
 
   if (errorCount === 0) {
-    // メモに追記して保存
-    savedMemo.push(...entries);
-    localStorage.setItem('savedMemo_' + getTodayStr(), JSON.stringify(savedMemo));
+    // 日付ごとにグループ化してlocalStorageに保存
+    const byDate = {};
+    entries.forEach(e => {
+      if (!byDate[e.date]) byDate[e.date] = [];
+      byDate[e.date].push(e);
+    });
+    Object.entries(byDate).forEach(([date, dateEntries]) => {
+      const existing = JSON.parse(localStorage.getItem('savedMemo_' + date) || '[]');
+      existing.push(...dateEntries);
+      localStorage.setItem('savedMemo_' + date, JSON.stringify(existing));
+    });
     showStatus('ok', `✅ ${successCount}件をスプレッドシートに保存しました`);
     setTimeout(() => { entries = []; renderList(); hideStatus(); }, 2500);
   } else {
@@ -557,7 +564,9 @@ function showMemo() {
 function showMemoForDate(dateStr) {
   if (!dateStr) return;
   const stored = JSON.parse(localStorage.getItem('savedMemo_' + dateStr) || '[]');
-  const allItems = dateStr === getTodayStr() ? [...stored, ...entries] : stored;
+  // 当日かつ未保存の入力中エントリも表示
+  const pendingForDate = entries.filter(e => e.date === dateStr);
+  const allItems = [...stored, ...pendingForDate];
 
   const content = document.getElementById('memo-list-content');
   content.innerHTML = '';
