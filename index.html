@@ -259,8 +259,19 @@
       <span class="memo-modal-title">📋 メモを確認</span>
       <button class="btn-close-memo" onclick="closeMemo()">✕</button>
     </div>
-    <div style="margin-bottom:12px">
-      <input type="date" id="memo-date-input" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:15px;" onchange="showMemoForDate(this.value)">
+    <div style="margin-bottom:8px">
+      <input type="date" id="memo-date-input" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:15px;" onchange="onMemoDateChange(this.value)">
+    </div>
+    <!-- タブ切り替え -->
+    <div style="display:flex;border-bottom:1px solid #e2e8f0;margin-bottom:10px;">
+      <button id="memo-tab-local" onclick="switchMemoTab('local')"
+        style="flex:1;padding:8px;font-size:13px;font-weight:600;border:none;background:#ebf8ff;color:#2b6cb0;cursor:pointer;border-bottom:2px solid #2b6cb0;">
+        📱 自分のメモ
+      </button>
+      <button id="memo-tab-sheets" onclick="switchMemoTab('sheets')"
+        style="flex:1;padding:8px;font-size:13px;font-weight:600;border:none;background:white;color:#718096;cursor:pointer;border-bottom:2px solid transparent;">
+        📊 スプレッドシート
+      </button>
     </div>
     <div id="memo-list-content"></div>
   </div>
@@ -339,7 +350,7 @@ function init() {
   const savedBy = localStorage.getItem('inputBy') || '';
   document.getElementById('input-by').value = savedBy;
   // スクリプトURL（デフォルト設定済み）
-  const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFPFQxqaimS53qaaNH0s3RBTJMl2pmBjOYD92ZhzswSKI6IWwicbng883btPevRTB8/exec';
+  const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwCBRagrPKAS-dPvsYWJJWoDU-xrAztj--Zo2Jy6tLt4qeCSMslBvou3WURipzCgGiW/exec';
   const savedUrl = localStorage.getItem('scriptUrl') || DEFAULT_SCRIPT_URL;
   document.getElementById('script-url').value = savedUrl;
   if (!localStorage.getItem('scriptUrl')) localStorage.setItem('scriptUrl', DEFAULT_SCRIPT_URL);
@@ -559,11 +570,79 @@ function copyAll() {
 }
 
 // ===== メモ確認 =====
+let currentMemoTab = 'local';
+let currentMemoDate = '';
+
 function showMemo() {
   const today = getTodayStr();
+  currentMemoDate = today;
   document.getElementById('memo-date-input').value = today;
   document.getElementById('memo-overlay').classList.add('open');
   showMemoForDate(today);
+}
+
+function onMemoDateChange(dateStr) {
+  currentMemoDate = dateStr;
+  if (currentMemoTab === 'local') showMemoForDate(dateStr);
+  else fetchSheetsData(dateStr);
+}
+
+function switchMemoTab(tab) {
+  currentMemoTab = tab;
+  const localBtn = document.getElementById('memo-tab-local');
+  const sheetsBtn = document.getElementById('memo-tab-sheets');
+  if (tab === 'local') {
+    localBtn.style.background = '#ebf8ff'; localBtn.style.color = '#2b6cb0'; localBtn.style.borderBottom = '2px solid #2b6cb0';
+    sheetsBtn.style.background = 'white'; sheetsBtn.style.color = '#718096'; sheetsBtn.style.borderBottom = '2px solid transparent';
+    showMemoForDate(currentMemoDate);
+  } else {
+    sheetsBtn.style.background = '#ebf8ff'; sheetsBtn.style.color = '#2b6cb0'; sheetsBtn.style.borderBottom = '2px solid #2b6cb0';
+    localBtn.style.background = 'white'; localBtn.style.color = '#718096'; localBtn.style.borderBottom = '2px solid transparent';
+    fetchSheetsData(currentMemoDate);
+  }
+}
+
+function fetchSheetsData(dateStr) {
+  const url = localStorage.getItem('scriptUrl') || '';
+  const content = document.getElementById('memo-list-content');
+  if (!url) {
+    content.innerHTML = '<div class="memo-empty">⚙ 設定でApps Script URLを入力してください</div>';
+    return;
+  }
+  const parts = dateStr.split('-');
+  const monthParam = parts[0] + '年' + parseInt(parts[1]) + '月';
+  content.innerHTML = '<div class="memo-empty">📡 スプレッドシートから取得中...</div>';
+  fetch(url + '?date=' + dateStr + '&month=' + encodeURIComponent(monthParam))
+    .then(r => r.json())
+    .then(data => {
+      if (!data.records || !data.records.length) {
+        content.innerHTML = '<div class="memo-empty">この日のスプレッドシート記録はありません</div>';
+        return;
+      }
+      content.innerHTML = '';
+      const header = document.createElement('div');
+      header.style.cssText = 'font-size:13px;color:#718096;margin-bottom:8px;font-weight:600;';
+      const d = new Date(dateStr);
+      header.textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日　${data.records.length}件（全スタッフ）`;
+      content.appendChild(header);
+      data.records.forEach(r => {
+        const company = r['会社名'] || '';
+        const staff = r['入力者'] || '';
+        const vals = ['可燃(袋)','可燃(kg)','不燃(袋)','不燃(kg)','カン(kg)','ビン(kg)','生ごみ(kg)','段ボール(kg)','アラ(kg)','PET(袋)','その他(袋)','その他(kg)']
+          .filter(k => r[k] !== '' && r[k] !== null && r[k] !== undefined)
+          .map(k => `${k}:${r[k]}`).join('　');
+        const div = document.createElement('div');
+        div.className = 'memo-item';
+        div.innerHTML = `
+          <div class="memo-item-company">🏢 ${company}</div>
+          <div class="memo-item-values">${vals || '（数値なし）'}</div>
+          ${staff ? `<div class="memo-item-meta">👤 ${staff}</div>` : ''}`;
+        content.appendChild(div);
+      });
+    })
+    .catch(err => {
+      content.innerHTML = '<div class="memo-empty">⚠ 取得エラー: ' + err.message + '</div>';
+    });
 }
 
 function showMemoForDate(dateStr) {
