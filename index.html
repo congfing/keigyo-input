@@ -413,7 +413,10 @@ function showMemoLocal(dateStr) {
     body.innerHTML = '<div class="memo-empty">この日の記録はありません</div>';
     return;
   }
-  let html = `<button class="btn-resend" onclick="resendAllToSheets('${dateStr}')">📤 全件をスプレッドシートに送信</button>`;
+  let html = `<div style="display:flex;gap:6px;margin-bottom:10px;">
+    <button class="btn-resend" style="flex:1;" onclick="resendAllToSheets('${dateStr}')">📤 全件送信</button>
+    <button class="btn-resend" style="flex:1;background:#fff5f5;color:#c53030;border-color:#fed7d7;" onclick="deduplicateMemos('${dateStr}')">🧹 重複削除</button>
+  </div>`;
   stored.forEach(r => {
     const vals = (r.fields||[]).filter(f=>f.value).map(f=>`${f.label}:${f.value}${f.unit}`).join('　');
     html += `<div class="memo-item">
@@ -423,6 +426,22 @@ function showMemoLocal(dateStr) {
     </div>`;
   });
   body.innerHTML = html;
+}
+
+function deduplicateMemos(dateStr) {
+  const stored = JSON.parse(localStorage.getItem('savedMemo_' + dateStr) || '[]');
+  if (!stored.length) { showToast('記録がありません'); return; }
+  const seen = {};
+  const deduped = [];
+  for (let i = stored.length - 1; i >= 0; i--) {
+    const key = stored[i].companyName;
+    if (!seen[key]) { seen[key] = true; deduped.unshift(stored[i]); }
+  }
+  if (deduped.length === stored.length) { showToast('重複はありませんでした'); return; }
+  const removed = stored.length - deduped.length;
+  localStorage.setItem('savedMemo_' + dateStr, JSON.stringify(deduped));
+  showToast('✅ ' + removed + '件の重複を削除しました');
+  showMemoLocal(dateStr);
 }
 
 function resendAllToSheets(dateStr) {
