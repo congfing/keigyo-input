@@ -335,9 +335,11 @@ function init() {
   // 入力者
   const savedBy = localStorage.getItem('inputBy') || '';
   document.getElementById('input-by').value = savedBy;
-  // スクリプトURL
-  const savedUrl = localStorage.getItem('scriptUrl') || '';
+  // スクリプトURL（デフォルト設定済み）
+  const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFPFQxqaimS53qaaNH0s3RBTJMl2pmBjOYD92ZhzswSKI6IWwicbng883btPevRTB8/exec';
+  const savedUrl = localStorage.getItem('scriptUrl') || DEFAULT_SCRIPT_URL;
   document.getElementById('script-url').value = savedUrl;
+  if (!localStorage.getItem('scriptUrl')) localStorage.setItem('scriptUrl', DEFAULT_SCRIPT_URL);
 }
 
 function getTodayStr() {
