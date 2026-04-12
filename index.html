@@ -183,10 +183,88 @@
   }
   .settings-area { display: none; margin-top: 8px; }
   .settings-area.open { display: block; }
+
+  /* メモ確認ボタン */
+  .btn-memo {
+    width: 100%;
+    padding: 12px;
+    background: #667eea;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 12px;
+  }
+  .btn-memo:active { background: #4c51bf; }
+
+  /* メモモーダル */
+  .memo-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    padding: 16px;
+    overflow-y: auto;
+  }
+  .memo-overlay.open { display: block; }
+  .memo-modal {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  .memo-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .memo-modal-title { font-size: 16px; font-weight: 700; color: #2d3748; }
+  .btn-close-memo {
+    background: #e2e8f0;
+    border: none;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+    font-size: 16px;
+    cursor: pointer;
+    color: #4a5568;
+  }
+  .memo-empty { text-align: center; color: #a0aec0; padding: 20px; font-size: 14px; }
+  .memo-item {
+    border-left: 3px solid #667eea;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    background: #f7fafc;
+    border-radius: 0 8px 8px 0;
+  }
+  .memo-item-company { font-size: 14px; font-weight: 700; color: #2d3748; }
+  .memo-item-values { font-size: 13px; color: #4a5568; margin-top: 3px; }
+  .memo-item-meta { font-size: 11px; color: #a0aec0; margin-top: 3px; }
 </style>
 </head>
 <body>
 <h1>📦 計量入力</h1>
+
+<!-- メモ確認ボタン -->
+<button class="btn-memo" onclick="showMemo()">📋 本日のメモを確認</button>
+
+<!-- メモモーダル -->
+<div class="memo-overlay" id="memo-overlay" onclick="closeMemoOnBg(event)">
+  <div class="memo-modal">
+    <div class="memo-modal-header">
+      <span class="memo-modal-title">📋 本日の入力メモ</span>
+      <button class="btn-close-memo" onclick="closeMemo()">✕</button>
+    </div>
+    <div style="margin-bottom:12px">
+      <input type="date" id="memo-date-input" style="width:100%;padding:10px;border:2px solid #e2e8f0;border-radius:8px;font-size:15px;" onchange="showMemoForDate(this.value)">
+    </div>
+    <div id="memo-list-content"></div>
+  </div>
+</div>
 
 <!-- 入力者 + 設定 -->
 <div class="card">
@@ -249,6 +327,7 @@ const COMPANIES_JSON_URL = 'companies.json';
 
 let companies = [];
 let entries = [];
+let savedMemo = JSON.parse(localStorage.getItem('savedMemo_' + getTodayStr()) || '[]');
 
 // 初期化
 function init() {
@@ -432,6 +511,9 @@ async function saveToSheet() {
   btn.disabled = false;
 
   if (errorCount === 0) {
+    // メモに追記して保存
+    savedMemo.push(...entries);
+    localStorage.setItem('savedMemo_' + getTodayStr(), JSON.stringify(savedMemo));
     showStatus('ok', `✅ ${successCount}件をスプレッドシートに保存しました`);
     setTimeout(() => { entries = []; renderList(); hideStatus(); }, 2500);
   } else {
@@ -462,6 +544,57 @@ function copyAll() {
   });
   showStatus('ok', '✅ コピーしました');
   setTimeout(hideStatus, 2000);
+}
+
+// ===== メモ確認 =====
+function showMemo() {
+  const today = getTodayStr();
+  document.getElementById('memo-date-input').value = today;
+  document.getElementById('memo-overlay').classList.add('open');
+  showMemoForDate(today);
+}
+
+function showMemoForDate(dateStr) {
+  if (!dateStr) return;
+  const stored = JSON.parse(localStorage.getItem('savedMemo_' + dateStr) || '[]');
+  const allItems = dateStr === getTodayStr() ? [...stored, ...entries] : stored;
+
+  const content = document.getElementById('memo-list-content');
+  content.innerHTML = '';
+
+  if (allItems.length === 0) {
+    const d = new Date(dateStr);
+    content.innerHTML = `<div class="memo-empty">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日の入力はありません</div>`;
+  } else {
+    const d = new Date(dateStr);
+    const header = document.createElement('div');
+    header.style.cssText = 'font-size:13px;color:#718096;margin-bottom:8px;font-weight:600;';
+    header.textContent = `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日　${allItems.length}件`;
+    content.appendChild(header);
+
+    allItems.forEach(e => {
+      const vals = e.fields
+        .filter(f => f.value !== '')
+        .map(f => `${f.label}${f.value}${f.unit}`)
+        .join('　');
+      const div = document.createElement('div');
+      div.className = 'memo-item';
+      const inputBy = e.inputBy || localStorage.getItem('inputBy') || '';
+      div.innerHTML = `
+        <div class="memo-item-company">🏢 ${e.companyName}</div>
+        <div class="memo-item-values">${vals || '（入力なし）'}</div>
+        ${inputBy ? `<div class="memo-item-meta">👤 ${inputBy}</div>` : ''}`;
+      content.appendChild(div);
+    });
+  }
+}
+
+function closeMemo() {
+  document.getElementById('memo-overlay').classList.remove('open');
+}
+
+function closeMemoOnBg(e) {
+  if (e.target === document.getElementById('memo-overlay')) closeMemo();
 }
 
 // Enterキー
