@@ -169,6 +169,12 @@ select:focus, input:focus { outline: none; border-color: #2b6cb0; }
         <input class="setting-input" id="script-url" type="url" placeholder="https://script.google.com/macros/s/...">
         <button class="setting-btn" onclick="saveScriptUrl()">💾 URL保存</button>
       </div>
+      <div style="margin-top:14px;">
+        <div class="setting-label">スプレッドシートURL（直接リンク用）</div>
+        <input class="setting-input" id="sheets-direct-url" type="url" placeholder="https://docs.google.com/spreadsheets/d/...">
+        <button class="setting-btn" onclick="saveSheetsDirectUrl()">💾 URL保存</button>
+        <p style="font-size:12px;color:#a0aec0;margin-top:6px">※ メモ確認→スプレッドシートタブで直接開けます</p>
+      </div>
     </div>
   </div>
 
@@ -247,6 +253,8 @@ function init() {
   const url = localStorage.getItem('scriptUrl') || DEFAULT_SCRIPT_URL;
   document.getElementById('script-url').value = url;
   if (!localStorage.getItem('scriptUrl')) localStorage.setItem('scriptUrl', DEFAULT_SCRIPT_URL);
+  const sheetsUrl = localStorage.getItem('sheetsDirectUrl') || '';
+  document.getElementById('sheets-direct-url').value = sheetsUrl;
   // 会社リスト
   const sel = document.getElementById('company-select');
   COMPANIES.forEach(c => {
@@ -432,6 +440,18 @@ function resendAllToSheets(dateStr) {
   });
 }
 
+function sheetsOpenButton() {
+  const url = localStorage.getItem('sheetsDirectUrl') || '';
+  if (!url) return `<p style="font-size:12px;color:#a0aec0;margin-top:10px;text-align:center">⚙ 設定から「スプレッドシートURL」を保存すると直接開けます</p>`;
+  return `<a href="${url}" target="_blank" style="display:block;width:100%;padding:12px;text-align:center;background:#f0fff4;color:#276749;border:1.5px solid #9ae6b4;border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;margin-top:8px;">📊 スプレッドシートを直接開く</a>`;
+}
+
+function saveSheetsDirectUrl() {
+  const url = document.getElementById('sheets-direct-url').value.trim();
+  localStorage.setItem('sheetsDirectUrl', url);
+  showToast('✅ スプレッドシートURLを保存しました');
+}
+
 function fetchSheetsData(dateStr) {
   const url = localStorage.getItem('scriptUrl') || DEFAULT_SCRIPT_URL;
   const body = document.getElementById('memo-body');
@@ -440,14 +460,16 @@ function fetchSheetsData(dateStr) {
   const monthParam = parts[0] + '年' + parseInt(parts[1]) + '月';
   body.innerHTML = '<div class="memo-empty">📡 取得中...</div>';
   const cbName = 'sheetsCb_' + Date.now();
+  let jsonpTimeout;
   window[cbName] = function(data) {
+    clearTimeout(jsonpTimeout);
     delete window[cbName];
     const s = document.getElementById('jsonp-' + cbName); if (s) s.remove();
     if (!data.records || !data.records.length) {
-      body.innerHTML = '<div class="memo-empty">この日のスプレッドシート記録はありません</div>'; return;
+      body.innerHTML = '<div class="memo-empty">この日のスプレッドシート記録はありません</div>' + sheetsOpenButton(); return;
     }
     const d = new Date(dateStr);
-    let html = `<div style="font-size:13px;color:#718096;margin-bottom:8px;font-weight:600;">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日　${data.records.length}件（全スタッフ）</div>`;
+    let html = sheetsOpenButton() + `<div style="font-size:13px;color:#718096;margin-bottom:8px;font-weight:600;margin-top:8px">${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日　${data.records.length}件（全スタッフ）</div>`;
     data.records.forEach(r => {
       const company = r['会社名']||'';
       const staff = r['入力者']||'';
@@ -463,8 +485,18 @@ function fetchSheetsData(dateStr) {
   };
   const script = document.createElement('script');
   script.id = 'jsonp-' + cbName;
-  script.onerror = () => { body.innerHTML='<div class="memo-empty">⚠ 取得エラー</div>'; delete window[cbName]; script.remove(); };
+  script.onerror = () => {
+    clearTimeout(jsonpTimeout);
+    delete window[cbName]; script.remove();
+    body.innerHTML = `<div style="padding:4px"><p style="color:#c53030;font-size:13px;margin-bottom:8px">⚠ 自動取得できませんでした</p>${sheetsOpenButton()}</div>`;
+  };
   script.src = url + '?date=' + dateStr + '&month=' + encodeURIComponent(monthParam) + '&callback=' + cbName;
+  jsonpTimeout = setTimeout(() => {
+    if (window[cbName]) {
+      delete window[cbName]; script.remove();
+      body.innerHTML = `<div style="padding:4px"><p style="color:#c53030;font-size:13px;margin-bottom:8px">⚠ タイムアウト</p>${sheetsOpenButton()}</div>`;
+    }
+  }, 10000);
   document.head.appendChild(script);
 }
 
