@@ -162,7 +162,7 @@
   <div class="nav-tabs">
     <button class="nav-tab active" id="navDate" onclick="navTo(1)">📅 日付選択</button>
     <button class="nav-tab disabled" id="navStaff" onclick="navTo(2)">👤 担当者</button>
-    <button class="nav-tab disabled" id="navProps" onclick="navTo(3)">🏢 物件リスト</button>
+    <button class="nav-tab disabled" id="navProps" onclick="navTo(3)">🏢 物件リスト<span id="entryCountBadge" style="display:none;background:#22c55e;color:white;border-radius:10px;padding:1px 6px;font-size:10px;font-weight:bold;margin-left:4px;vertical-align:middle"></span></button>
     <button class="nav-tab" id="navHistory" onclick="navTo(6)">📋 履歴</button>
     <button class="nav-tab" id="navSettings" onclick="navTo(0)">⚙️ 設定</button>
     <button class="nav-tab" id="navMail" onclick="navTo(7)">✉️ メール</button>
@@ -183,7 +183,7 @@
     </div>
     <div style="height:12px"></div>
     <button class="btn btn-primary" onclick="goToScreen2()">新規入力 →</button>
-    <div style="text-align:center;margin-top:20px;font-size:12px;color:#aaa">index_3-10.html</div>
+    <div style="text-align:center;margin-top:20px;font-size:12px;color:#aaa">index_3-11.html</div>
   </div>
 </div>
 
@@ -207,10 +207,6 @@
   <div style="padding-top:16px">
     <div class="section-title">🏢 物件リスト<span class="count-badge" id="propCount"></span></div>
     <div class="section-sub" id="screen3sub"></div>
-    <div id="saveOrderBanner" class="save-order-banner">
-      <span>💾 この入力順を来週用に保存しますか？</span>
-      <button class="btn btn-warning btn-sm" onclick="saveCurrentOrder()">保存</button>
-    </div>
     <div class="sort-hint" id="sortHint"></div>
     <div id="propertyList"></div>
     <div style="display:flex;gap:10px;margin-top:8px">
@@ -239,7 +235,6 @@
     <div class="section-title">✅ 確認・保存</div>
     <div class="section-sub" id="screen5sub"></div>
     <div id="summaryContent"></div>
-    <button class="btn btn-warning" onclick="saveCurrentOrder()" style="margin-bottom:10px">💾 この入力順を来週用に保存</button>
     <div style="display:flex;gap:10px;margin-bottom:10px">
       <button class="btn btn-success" style="flex:1" onclick="exportText()">📄 TEXT保存</button>
       <button class="btn btn-primary" style="flex:1" onclick="exportXlsx()">📥 Excel保存</button>
@@ -535,7 +530,6 @@ window.onload = function(){
 
   if(restoreSession() && state.selectedStaff){
     // 入力途中のデータがあれば物件リストを復元
-    document.getElementById('propCount').textContent=allProperties.length+'件';
     document.getElementById('screen3sub').textContent=`担当：${state.selectedStaff}`;
     renderPropertyList();
     const scr = [3,4,5].includes(state.currentScreen) ? 3 : (state.currentScreen||1);
@@ -636,7 +630,6 @@ function goToScreen3(){
   if(!state.selectedStaff){alert('担当者を選択してください');return;}
   state.entryData={};state.entryOrder=[];state.customOrder=null;
   saveSession();
-  document.getElementById('propCount').textContent=allProperties.length+'件';
   document.getElementById('screen3sub').textContent=`担当：${state.selectedStaff}`;
   renderPropertyList();showScreen(3);
 }
@@ -657,11 +650,9 @@ function getSortedProps(){
 function renderPropertyList(){
   const c=document.getElementById('propertyList'); c.innerHTML='';
   const hint=document.getElementById('sortHint');
-  const banner=document.getElementById('saveOrderBanner');
 
   let displayList;
   if(state.customOrder){
-    // Use drag-reordered list
     displayList=state.customOrder.map(n=>allProperties.find(p=>p.name===n)).filter(Boolean);
     const missing=allProperties.filter(p=>!state.customOrder.includes(p.name));
     displayList=[...displayList,...missing];
@@ -675,16 +666,23 @@ function renderPropertyList(){
   const hasSaved=!!getSavedOrder(state.selectedStaff,state.dayName);
   if(state.customOrder){
     hint.textContent='↕ ドラッグで並び替え中';
-    banner.style.display='none';
   } else if(state.entryOrder.length>0){
     hint.textContent='✅ 入力済みが上に並んでいます';
-    banner.style.display='flex';
   } else if(hasSaved){
     hint.textContent='📌 前回の入力順で表示中';
-    banner.style.display='none';
   } else {
     hint.textContent='番号順で表示中';
-    banner.style.display='none';
+  }
+
+  // Update entry count badge
+  const enteredCount = Object.keys(state.entryData).length;
+  document.getElementById('propCount').textContent = allProperties.length + '件';
+  const badge = document.getElementById('entryCountBadge');
+  if(enteredCount > 0){
+    badge.textContent = '✅ ' + enteredCount + ' / ' + allProperties.length;
+    badge.style.display = 'inline-block';
+  } else {
+    badge.style.display = 'none';
   }
 
   displayList.forEach((prop,di)=>{
@@ -730,7 +728,11 @@ function renderPropertyList(){
     div.innerHTML=`
       <div class="prop-card-header" onclick="togglePropCard(${idx})">
         <button class="drag-handle" data-propname="${prop.name.replace(/"/g,'&quot;')}" ontouchstart="dragHandleStart(event,this)" onmousedown="dragHandleStart(event,this)">≡</button>
-        <span class="prop-seq-num">${di+1}</span>
+        <input type="number" class="prop-order-input" value="${di+1}" min="1" max="${displayList.length}"
+          onclick="event.stopPropagation()"
+          onkeydown="if(event.key==='Enter'){event.stopPropagation();movePropToPos(${di},this);this.blur();}"
+          onblur="resetPropOrderInput(${di},this)"
+          onfocus="event.stopPropagation();this.select()">
         <div class="prop-info">
           <div class="prop-name">${prop.name}</div>
           <div class="prop-days">${dayDots}</div>
@@ -861,7 +863,20 @@ function savePropertyData(){
   state.entryOrder.push(prop.name);
   saveSession();
   saveHistory(state.date, state.selectedStaff, state.entryData);
+  const savedName = prop.name;
   renderPropertyList();showScreen(3);
+  setTimeout(()=>{
+    const cards = document.querySelectorAll('.prop-card');
+    let savedCard = null;
+    cards.forEach(c=>{ if(c.dataset.propname===savedName) savedCard=c; });
+    if(savedCard){
+      const headerH = document.querySelector('.header').offsetHeight;
+      const top = savedCard.getBoundingClientRect().top + window.scrollY - headerH - 8;
+      window.scrollTo({ top, behavior:'instant' });
+      const inp = savedCard.querySelector('.prop-order-input');
+      if(inp){ inp.focus(); inp.select(); }
+    }
+  }, 80);
 }
 
 function clearPropertyData(){
@@ -1406,6 +1421,59 @@ function dragEnd(e){
     }
   }
   _drag.active = false; _drag.propName = null; _drag.srcEl = null; _drag.overEl = null;
+}
+
+// ===== NUMBER REORDER =====
+function movePropToPos(fromIdx, input){
+  const toPos = parseInt(input.value);
+  if(isNaN(toPos)) return;
+  // Build current displayList
+  let displayList;
+  if(state.customOrder){
+    displayList = state.customOrder.map(n=>allProperties.find(p=>p.name===n)).filter(Boolean);
+    const missing = allProperties.filter(p=>!state.customOrder.includes(p.name));
+    displayList = [...displayList, ...missing];
+  } else {
+    const baseProps = getSortedProps();
+    const entered = state.entryOrder.map(n=>baseProps.find(p=>p.name===n)).filter(Boolean);
+    const remaining = baseProps.filter(p=>!state.entryOrder.includes(p.name));
+    displayList = [...entered, ...remaining];
+  }
+  const toIdx = Math.max(0, Math.min(toPos-1, displayList.length-1));
+  if(toIdx === fromIdx){ input.value = fromIdx+1; return; }
+  // Initialize customOrder from current display if needed
+  if(!state.customOrder){
+    state.customOrder = displayList.map(p=>p.name);
+  }
+  const order = [...state.customOrder];
+  const propName = displayList[fromIdx].name;
+  const fi = order.indexOf(propName);
+  if(fi !== -1){
+    const item = order.splice(fi, 1)[0];
+    // toIdx references displayList positions; find corresponding customOrder index
+    const toName = displayList[toIdx].name;
+    let ti = order.indexOf(toName);
+    if(ti === -1) ti = order.length;
+    order.splice(ti, 0, item);
+  }
+  state.customOrder = order;
+  saveSession();
+  renderPropertyList();
+  setTimeout(()=>{
+    const cards = document.querySelectorAll('.prop-card');
+    if(cards[toIdx]){
+      const headerH = document.querySelector('.header').offsetHeight;
+      const top = cards[toIdx].getBoundingClientRect().top + window.scrollY - headerH - 8;
+      window.scrollTo({ top, behavior:'smooth' });
+      cards[toIdx].style.background = '#d1fae5';
+      setTimeout(()=>{ cards[toIdx].style.background = ''; }, 800);
+    }
+  }, 50);
+}
+
+function resetPropOrderInput(fromIdx, input){
+  // On blur without Enter: reset display value
+  input.value = fromIdx + 1;
 }
 
 // ===== SHARE HISTORY AS EXCEL =====
